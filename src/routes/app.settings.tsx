@@ -43,7 +43,7 @@ import {
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/app/settings")({
-  validateSearch: (search: Record<string, unknown>): { tab?: TabId } => ({
+  validateSearch: (search: Record<string, unknown>): { tab?: TabId | undefined } => ({
     tab: typeof search["tab"] === "string" && isTab(search["tab"]) ? search["tab"] : undefined,
   }),
   head: () => ({
