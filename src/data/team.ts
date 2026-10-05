@@ -7,6 +7,7 @@ import {
   LineChart,
   type LucideIcon,
 } from "lucide-react";
+import { employeeGuides, type EmployeeGuide } from "./employee-guides";
 
 export type TeamMember = {
   id: string;
@@ -28,11 +29,13 @@ export type TeamMember = {
   sample: { label: string; body: string }[];
   limits: string[];
   faqs: { question: string; answer: string }[];
+  guide: EmployeeGuide;
 };
 
 export const team: TeamMember[] = [
   {
     id: "sonny",
+    guide: employeeGuides.sonny,
     name: "سِراج",
     latin: "Siraj",
     role: "مدير السوشيال ميديا",
@@ -102,6 +105,7 @@ export const team: TeamMember[] = [
   },
   {
     id: "eva",
+    guide: employeeGuides.eva,
     name: "أمَل",
     latin: "Amal",
     role: "المساعدة التنفيذية",
@@ -167,6 +171,7 @@ export const team: TeamMember[] = [
   },
   {
     id: "sam",
+    guide: employeeGuides.sam,
     name: "سالم",
     latin: "Salim",
     role: "مسؤول المبيعات",
@@ -233,6 +238,7 @@ export const team: TeamMember[] = [
   },
   {
     id: "nour",
+    guide: employeeGuides.nour,
     name: "نور",
     latin: "Nour",
     role: "مسؤولة المحتوى والسيو",
@@ -315,6 +321,7 @@ export const team: TeamMember[] = [
 
   {
     id: "dana",
+    guide: employeeGuides.dana,
     name: "دانة",
     latin: "Danah",
     role: "المصممة",
@@ -371,6 +378,7 @@ export const team: TeamMember[] = [
   },
   {
     id: "adam",
+    guide: employeeGuides.adam,
     name: "آدم",
     latin: "Adam",
     role: "محلل البيانات",
