@@ -838,13 +838,13 @@ export function EditorialHomepage() {
                     شاهد مهامه <ArrowLeft />
                   </Link>
                 </div>
-                <ProductFrame
-                  src={item.image}
-                  mobileSrc={item.mobileImage}
-
-
-                  alt={`واجهة ${item.kicker} داخل سهل`}
-                />
+                {item.frame ? (
+                  <ProductFrame
+                    src={item.image}
+                    mobileSrc={item.mobileImage}
+                    alt={`واجهة ${item.kicker} داخل سهل`}
+                  />
+                ) : null}
               </Reveal>
             ))}
           </div>
