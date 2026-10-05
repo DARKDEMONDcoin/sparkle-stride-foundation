@@ -62,6 +62,10 @@ import { SampleChatShot } from "@/components/site/SampleChatShot";
 
 type DemoPhase = "idle" | "thinking" | "draft" | "approved";
 
+/**
+ * الموكاب واحد في الأصل — شاشة بداية المحادثة نفسها. نكرره في كل بطاقة
+ * يخنق الصفحة، لذلك نُبقيه للبطاقتين العريضتين فقط (سِراج ونور).
+ */
 const capabilities = [
   {
     icon: MessageSquareText,
@@ -70,6 +74,7 @@ const capabilities = [
     body: "يبني خطة ٣٠ يومًا، يكتب كل نسخة، ينسّق التصميم والنشر، ثم يعيد أفضل الأفكار إلى التقويم.",
     image: sonnyDesktopAsset.url,
     mobileImage: sonnyMobileAsset.url,
+    frame: true,
     tone: "terracotta",
     span: "wide",
   },
@@ -80,6 +85,7 @@ const capabilities = [
     body: "تفرز البريد، ترتب الاجتماعات، وتضع القرارات المعلّقة في ملخص صباحي واحد.",
     image: evaDesktopAsset.url,
     mobileImage: evaMobileAsset.url,
+    frame: false,
     tone: "gold",
     span: "standard",
   },
@@ -90,6 +96,7 @@ const capabilities = [
     body: "يبحث عن العميل المناسب، يخصص التواصل، ويسلمك الفرص الجاهزة للمكالمة.",
     image: samDesktopAsset.url,
     mobileImage: samMobileAsset.url,
+    frame: false,
     tone: "teal",
     span: "standard",
   },
@@ -100,6 +107,7 @@ const capabilities = [
     body: "ترصد السؤال، تبني خطة موضوعات، وتكتب صفحات أصلية مرتبطة بما يطلبه السوق.",
     image: nourDesktopAsset.url,
     mobileImage: nourMobileAsset.url,
+    frame: true,
     tone: "terracotta",
     span: "wide",
   },
@@ -110,6 +118,7 @@ const capabilities = [
     body: "تحول المسودة إلى نظام بصري متسق، ثم تجهز نسخ كل منصة للمراجعة.",
     image: danaDesktopAsset.url,
     mobileImage: danaMobileAsset.url,
+    frame: false,
     tone: "teal",
     span: "standard",
   },
@@ -120,6 +129,7 @@ const capabilities = [
     body: "يجمع أداء القنوات، يرصد التغير، ويحدد أين تتحرك الميزانية والجهد بعد ذلك.",
     image: adamDesktopAsset.url,
     mobileImage: adamMobileAsset.url,
+    frame: false,
     tone: "gold",
     span: "standard",
   },
@@ -828,13 +838,13 @@ export function EditorialHomepage() {
                     شاهد مهامه <ArrowLeft />
                   </Link>
                 </div>
-                <ProductFrame
-                  src={item.image}
-                  mobileSrc={item.mobileImage}
-
-
-                  alt={`واجهة ${item.kicker} داخل سهل`}
-                />
+                {item.frame ? (
+                  <ProductFrame
+                    src={item.image}
+                    mobileSrc={item.mobileImage}
+                    alt={`واجهة ${item.kicker} داخل سهل`}
+                  />
+                ) : null}
               </Reveal>
             ))}
           </div>
