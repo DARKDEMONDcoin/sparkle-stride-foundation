@@ -47,3 +47,5 @@
 - Employee IDs (sonny/eva/sam=Siraj/Amal/Salem) are permanent; never rename (stored in DB, URLs).
 
 - Public compact nav uses a focus-managed modal drawer with independent scrolling to keep menus bounded.
+
+- Homepage device media uses per-employee desktop/mobile CDN screenshot pairs captured from the current chat UI with synthetic public data; never publish private account content or let legacy videos override the screenshots. Why: accurate, privacy-safe before-send previews on each device.
