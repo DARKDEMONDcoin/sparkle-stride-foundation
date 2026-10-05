@@ -93,7 +93,7 @@ function isTab(value: string | null): value is TabId {
 
 function SettingsPage() {
   const navigate = useNavigate();
-  const requestedTab = useRouterState({ select: state => (state.location.search as Record<string, unknown>).tab });
+  const requestedTab: unknown = useRouterState({ select: state => (state.location.search as Record<string, unknown>)["tab"] });
   const tab: TabId = typeof requestedTab === "string" && isTab(requestedTab) ? requestedTab : "workspace";
   const [notice, setNotice] = useState<{ type: "success" | "error"; text: string } | null>(null);
   const { data: workspace, isLoading: workspaceLoading } = useWorkspace();

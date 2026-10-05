@@ -14,7 +14,7 @@
 - Multi-step browsing uses `browser-agent.server.ts`; page content is untrusted and sensitive clicks need approval.
 - Global destinations live in the AppShell rail; employee chat, calendar, and guideline pages retain the employee topbar, while contextual design editing stays inside chat.
 - The desktop AppShell sidebar collapses to an employee icon rail and persists its state locally; keep fixed chat overlays aligned to its width so the conversation stays usable.
-- The primary rail expands independently and the chat topbar/composer must clear both rail and employee sidebar; hide the rail for embedded chat. Why: fixed controls must not overlap either navigation surface.
+- Rail expands independently; chat controls clear both sidebars; embedded chat hides the rail to avoid overlap.
 - `runEmployeeTurn` delegates out-of-specialty work via smartHandoff while keeping the conversation.
 - Employee tools live in `employee-toolbelt.ts`; browser tasks stop before payment.
 - Chat action commands use `chat-commands.ts`; edits use `reviseEmployeeAction`.
@@ -27,7 +27,7 @@
 - Chat research requests run `runBrowserAgent` inside the turn and stream `browser`/`step` events to the chat; employees never redirect users to colleagues (routing is silent). Why: users need real results and live visibility, not hand-off ping-pong.
 - Signup CTAs enter /welcome then /auth; external Google OAuth returns to public /auth before /app. Bind website drafts only to new accounts. Why: preserve introduction and invite intent without cross-account reuse.
 - Pre-signup site previews read a few same-site pages (fetch → Jina → Browserbase → Tavily), then one rate-limited, per-host-cached AI pass builds the business profile. Why: deep understanding at bounded anonymous cost.
-- Public website color swatches come only from the scanned site's declared theme and same-site stylesheet brand tokens, never generic CSS color frequency or invented defaults. Why: the introduction must not misrepresent the visitor's branding.
+- Website swatches use declared theme and same-site brand tokens, not color frequency or defaults, to preserve branding.
 - Public pre-signup industry recommendations are short, rate-limited, validated AI suggestions grounded in a selected sector and optional public-site evidence; no account data or market metrics are implied. Why: visitors get useful next actions without confusing hypotheses with verified findings.
 - Welcome purpose variants live in a browser-safe shared module used by every tour/recommendation path, avoiding business-only claims.
 - Chat capabilities and owner guidelines derive from shared skills; guideline rows are scoped to one employee.
@@ -41,3 +41,5 @@
 - Referral earnings require verified payments and refund maturity; users cannot write them.
 - Feedback/support records are private behind RLS.
 - Chat media from users, employees, and generators uses `ChatAttachments` for consistent responsive sizing and fullscreen viewing.
+- AccountMenu owns presentation and scoped styles; AppShell owns auth/data so account rules stay unchanged.
+- Settings use router search state so links and browser history show the requested section.
