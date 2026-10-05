@@ -25,7 +25,7 @@
 - Semantic memory lives in `knowledge_chunks` (google/gemini-embedding-2, 3072 dims) via `src/lib/knowledge.server.ts`; never mix embedding models in that column.
 - Public site origin comes from `src/lib/site-origin.ts`; do not hard-code other lovable.app hosts.
 - Chat research requests run `runBrowserAgent` inside the turn and stream `browser`/`step` events to the chat; employees never redirect users to colleagues (routing is silent). Why: users need real results and live visibility, not hand-off ping-pong.
-- Public signup CTAs enter optional `/welcome` before `/auth`; after sign-up, an account-bound session marker lets the first-run profile card analyze the draft website into that workspace once, without another onboarding or cross-account reuse.
+- Signup CTAs enter /welcome then /auth; external Google OAuth returns to public /auth before /app. Bind website drafts only to new accounts. Why: preserve introduction and invite intent without cross-account reuse.
 - Pre-signup site previews read a few same-site pages (fetch → Jina → Browserbase → Tavily), then one rate-limited, per-host-cached AI pass builds the business profile. Why: deep understanding at bounded anonymous cost.
 - Public website color swatches come only from the scanned site's declared theme and same-site stylesheet brand tokens, never generic CSS color frequency or invented defaults. Why: the introduction must not misrepresent the visitor's branding.
 - Public pre-signup industry recommendations are short, rate-limited, validated AI suggestions grounded in a selected sector and optional public-site evidence; no account data or market metrics are implied. Why: visitors get useful next actions without confusing hypotheses with verified findings.

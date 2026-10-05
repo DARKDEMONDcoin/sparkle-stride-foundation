@@ -5,6 +5,7 @@ import { z } from "zod";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
 
 import { LogoMark } from "@/components/site/LogoMark";
+import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { signIn } from "@/lib/auth";
 import { GUEST_EMAIL } from "@/lib/guest.functions";
@@ -16,6 +17,7 @@ const searchSchema = z.object({
   plan: z.enum(["start", "growth"]).optional(),
   invite: z.string().regex(/^[a-f0-9]{64}$/).optional(),
   ref: z.string().regex(/^[A-Z0-9]{8,16}$/).optional(),
+  oauth: z.enum(["signup", "signin"]).optional(),
 });
 
 export const Route = createFileRoute("/auth")({
@@ -142,6 +144,7 @@ function AuthPage() {
   const [errors, setErrors] = useState<Errors>({});
   const [formError, setFormError] = useState("");
   const [busy, setBusy] = useState(false);
+  const [googleBusy, setGoogleBusy] = useState(false);
   const [resetSent, setResetSent] = useState(false);
 
   useEffect(() => {
@@ -150,20 +153,41 @@ function AuthPage() {
 
   useEffect(() => {
     let active = true;
-    supabase.auth.getUser().then(({ data }) => {
+    const hash = new URLSearchParams(window.location.hash.slice(1));
+    const callbackError = hash.get("error_description") || new URLSearchParams(window.location.search).get("error_description");
+    if (callbackError) {
+      setFormError(arabicError(callbackError));
+      window.history.replaceState(null, "", window.location.pathname + window.location.search);
+      return;
+    }
+    supabase.auth.getUser().then(({ data, error }) => {
       if (!active) return;
       const user = data.user;
+      if (search.oauth && (error || !user)) {
+        setFormError("لم يكتمل تسجيل الدخول عبر Google — جرّب مرة أخرى.");
+        return;
+      }
       if (!user || user.is_anonymous || !user.email) return;
       if (user.email === GUEST_EMAIL) {
         void supabase.auth.signOut();
         return;
       }
+      if (search.oauth === "signup") {
+        try {
+          const saved = JSON.parse(sessionStorage.getItem("sahl-welcome-draft") ?? "null") as { website?: unknown } | null;
+          const age = Date.now() - Date.parse(user.created_at);
+          // Do not import another account's browser draft into an existing account.
+          if (typeof saved?.website === "string" && saved.website.trim() && age >= 0 && age < 5 * 60 * 1000) {
+            sessionStorage.setItem("sahl-welcome-profile-user", user.id);
+          }
+        } catch { /* The introduction must not block authentication. */ }
+      }
       void navigate(search.invite ? { to: "/invite", search: { token: search.invite }, replace: true } : { to: "/app", replace: true });
-    });
+    }).catch(() => { if (active) setFormError("تعذّر التحقق من حسابك — أعد المحاولة."); });
     return () => {
       active = false;
     };
-  }, [navigate, search.invite]);
+  }, [navigate, search.invite, search.oauth]);
 
   const isSignup = mode === "signup";
 
@@ -239,15 +263,25 @@ function AuthPage() {
   }
 
   async function onGoogle() {
+    if (googleBusy || busy) return;
     setFormError("");
+    setGoogleBusy(true);
     try {
+      // External Supabase provider: return publicly before entering the guarded workspace.
+      const callback = new URL("/auth", window.location.origin);
+      callback.searchParams.set("mode", mode);
+      callback.searchParams.set("oauth", mode);
+      if (search.invite) callback.searchParams.set("invite", search.invite);
+      if (search.plan) callback.searchParams.set("plan", search.plan);
+      if (search.ref) callback.searchParams.set("ref", search.ref);
       const { error } = await supabase.auth.signInWithOAuth({
         provider: "google",
-        options: { redirectTo: `${window.location.origin}/app` },
+        options: { redirectTo: callback.toString() },
       });
       if (error) throw error;
     } catch (error) {
       setFormError(arabicError(error instanceof Error ? error.message : String(error)));
+      setGoogleBusy(false);
     }
   }
 
@@ -287,10 +321,10 @@ function AuthPage() {
           <div className="sauth-card-body">
             <h1 className="sauth-title">{isSignup ? "أنشئ حساب سهل" : "سجّل الدخول إلى سهل"}</h1>
 
-            <button type="button" className="sauth-google" onClick={onGoogle}>
-              <span>{isSignup ? "التسجيل عبر Google" : "المتابعة عبر Google"}</span>
-              <GoogleIcon />
-            </button>
+            <Button type="button" variant="outline" className="sauth-google" onClick={onGoogle} disabled={googleBusy || busy}>
+              <span>{googleBusy ? "نفتح Google…" : isSignup ? "التسجيل عبر Google" : "المتابعة عبر Google"}</span>
+              {googleBusy ? <Loader2 className="animate-spin" /> : <GoogleIcon />}
+            </Button>
 
             <div className="sauth-divider">
               <span>{isSignup ? "أو سجّل عبر" : "أو ادخل عبر"}</span>
