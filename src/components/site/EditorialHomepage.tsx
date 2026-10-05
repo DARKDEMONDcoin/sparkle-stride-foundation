@@ -40,18 +40,18 @@ import ecommerceSector from "@/assets/sectors/ecommerce.jpg";
 import restaurantsSector from "@/assets/sectors/restaurants.jpg";
 import clinicsSector from "@/assets/sectors/clinics.jpg";
 import realestateSector from "@/assets/sectors/realestate.jpg";
-import sonnyDesktop from "@/assets/employee-screens-v2/sonny-desktop.png";
-import sonnyMobile from "@/assets/employee-screens-v2/sonny-mobile.png";
-import evaDesktop from "@/assets/employee-screens-v2/eva-desktop.png";
-import evaMobile from "@/assets/employee-screens-v2/eva-mobile.png";
-import samDesktop from "@/assets/employee-screens-v2/sam-desktop.png";
-import samMobile from "@/assets/employee-screens-v2/sam-mobile.png";
-import nourDesktop from "@/assets/employee-screens-v2/nour-desktop.png";
-import nourMobile from "@/assets/employee-screens-v2/nour-mobile.png";
-import danaDesktop from "@/assets/employee-screens-v2/dana-desktop.png";
-import danaMobile from "@/assets/employee-screens-v2/dana-mobile.png";
-import adamDesktop from "@/assets/employee-screens-v2/adam-desktop.png";
-import adamMobile from "@/assets/employee-screens-v2/adam-mobile.png";
+import sonnyDesktopAsset from "@/assets/employee-chat-captures/sonny-desktop.webp.asset.json";
+import sonnyMobileAsset from "@/assets/employee-chat-captures/sonny-mobile.webp.asset.json";
+import evaDesktopAsset from "@/assets/employee-chat-captures/eva-desktop.webp.asset.json";
+import evaMobileAsset from "@/assets/employee-chat-captures/eva-mobile.webp.asset.json";
+import samDesktopAsset from "@/assets/employee-chat-captures/sam-desktop.webp.asset.json";
+import samMobileAsset from "@/assets/employee-chat-captures/sam-mobile.webp.asset.json";
+import nourDesktopAsset from "@/assets/employee-chat-captures/nour-desktop.webp.asset.json";
+import nourMobileAsset from "@/assets/employee-chat-captures/nour-mobile.webp.asset.json";
+import danaDesktopAsset from "@/assets/employee-chat-captures/dana-desktop.webp.asset.json";
+import danaMobileAsset from "@/assets/employee-chat-captures/dana-mobile.webp.asset.json";
+import adamDesktopAsset from "@/assets/employee-chat-captures/adam-desktop.webp.asset.json";
+import adamMobileAsset from "@/assets/employee-chat-captures/adam-mobile.webp.asset.json";
 import planFlowWide from "@/assets/product/plan-flow-wide.png";
 import planFlowTall from "@/assets/product/plan-flow-tall.png";
 import adsVisual from "@/assets/product/ads-visual.png";
@@ -68,10 +68,8 @@ const capabilities = [
     kicker: "سِراج · السوشيال والإعلانات المموّلة",
     title: "من طلب واحد إلى حملة جاهزة للاعتماد.",
     body: "يبني خطة ٣٠ يومًا، يكتب كل نسخة، ينسّق التصميم والنشر، ثم يعيد أفضل الأفكار إلى التقويم.",
-    image: sonnyDesktop,
-    mobileImage: sonnyMobile,
-    video: "/media/home/sonny-desktop.mp4",
-    mobileVideo: "/media/home/sonny-mobile.mp4",
+    image: sonnyDesktopAsset.url,
+    mobileImage: sonnyMobileAsset.url,
     tone: "terracotta",
     span: "wide",
   },
@@ -80,10 +78,8 @@ const capabilities = [
     kicker: "أمَل · المساعدة التنفيذية",
     title: "ساعتك القادمة واضحة قبل أن تبدأ.",
     body: "تفرز البريد، ترتب الاجتماعات، وتضع القرارات المعلّقة في ملخص صباحي واحد.",
-    image: evaDesktop,
-    mobileImage: evaMobile,
-    video: "/media/home/eva-desktop.mp4",
-    mobileVideo: "/media/home/eva-mobile.mp4",
+    image: evaDesktopAsset.url,
+    mobileImage: evaMobileAsset.url,
     tone: "gold",
     span: "standard",
   },
@@ -92,10 +88,8 @@ const capabilities = [
     kicker: "سالم · المبيعات",
     title: "كل فرصة لها رسالة وخطوة تالية.",
     body: "يبحث عن العميل المناسب، يخصص التواصل، ويسلمك الفرص الجاهزة للمكالمة.",
-    image: samDesktop,
-    mobileImage: samMobile,
-    video: "/media/home/sam-desktop.mp4",
-    mobileVideo: "/media/home/sam-mobile.mp4",
+    image: samDesktopAsset.url,
+    mobileImage: samMobileAsset.url,
     tone: "teal",
     span: "standard",
   },
@@ -104,10 +98,8 @@ const capabilities = [
     kicker: "نور · المحتوى والسيو",
     title: "إجابة عربية يجدها عميلك وقت البحث.",
     body: "ترصد السؤال، تبني خطة موضوعات، وتكتب صفحات أصلية مرتبطة بما يطلبه السوق.",
-    image: nourDesktop,
-    mobileImage: nourMobile,
-    video: "/media/home/nour-desktop.mp4",
-    mobileVideo: "/media/home/nour-mobile.mp4",
+    image: nourDesktopAsset.url,
+    mobileImage: nourMobileAsset.url,
     tone: "terracotta",
     span: "wide",
   },
@@ -116,10 +108,8 @@ const capabilities = [
     kicker: "دانة · التصميم",
     title: "فكرة واحدة، وكل المقاسات جاهزة.",
     body: "تحول المسودة إلى نظام بصري متسق، ثم تجهز نسخ كل منصة للمراجعة.",
-    image: danaDesktop,
-    mobileImage: danaMobile,
-    video: "/media/home/dana-desktop.mp4",
-    mobileVideo: "/media/home/dana-mobile.mp4",
+    image: danaDesktopAsset.url,
+    mobileImage: danaMobileAsset.url,
     tone: "teal",
     span: "standard",
   },
@@ -128,10 +118,8 @@ const capabilities = [
     kicker: "آدم · تحليل البيانات",
     title: "التقرير ينتهي بقرار، لا برقم.",
     body: "يجمع أداء القنوات، يرصد التغير، ويحدد أين تتحرك الميزانية والجهد بعد ذلك.",
-    image: adamDesktop,
-    mobileImage: adamMobile,
-    video: "/media/home/adam-desktop.mp4",
-    mobileVideo: "/media/home/adam-mobile.mp4",
+    image: adamDesktopAsset.url,
+    mobileImage: adamMobileAsset.url,
     tone: "gold",
     span: "standard",
   },
@@ -425,15 +413,11 @@ function useDeviceLanding<T extends HTMLElement>() {
 function ProductFrame({
   src,
   mobileSrc,
-  video,
-  mobileVideo,
   alt,
   hero = false,
 }: {
   src: string;
   mobileSrc?: string;
-  video?: string;
-  mobileVideo?: string;
   alt: string;
   hero?: boolean;
 }) {
@@ -449,15 +433,18 @@ function ProductFrame({
         <span className="sahl-phone-button is-volume-down" aria-hidden="true" />
         <span className="sahl-phone-button is-power" aria-hidden="true" />
         <div className="sahl-device-screen">
-          {video ? <video autoPlay muted loop playsInline preload={hero ? "auto" : "metadata"} poster={src} aria-label={alt}>
-            {mobileVideo ? <source media="(max-width: 720px)" src={mobileVideo.replace(/\.mp4$/, ".webm")} type="video/webm" /> : null}
-            {mobileVideo ? <source media="(max-width: 720px)" src={mobileVideo} type="video/mp4" /> : null}
-            <source src={video.replace(/\.mp4$/, ".webm")} type="video/webm" />
-            <source src={video} type="video/mp4" />
-          </video> : <picture>
-              {mobileSrc && <source media="(max-width: 720px)" srcSet={mobileSrc} />}
-              <img src={src} alt={alt} loading={hero ? "eager" : "lazy"} />
-            </picture>}
+          <picture>
+            {mobileSrc && <source media="(max-width: 720px)" srcSet={mobileSrc} />}
+            <img
+              src={src}
+              alt={alt}
+              width={2560}
+              height={1640}
+              loading={hero ? "eager" : "lazy"}
+              fetchPriority={hero ? "high" : "auto"}
+              decoding="async"
+            />
+          </picture>
         </div>
       </div>
       <div className="sahl-laptop-base" aria-hidden="true">
@@ -698,10 +685,10 @@ export function EditorialHomepage() {
           <div className="sahl-hero-product">
             <span className="sahl-hero-wash" aria-hidden="true" />
             <ProductFrame
-              src={sonnyDesktop}
-              mobileSrc={sonnyMobile}
-              video="/media/home/sonny-desktop.mp4"
-              mobileVideo="/media/home/sonny-mobile.mp4"
+              src={sonnyDesktopAsset.url}
+              mobileSrc={sonnyMobileAsset.url}
+
+
               alt="مساحة عمل سهل: محادثة سِراج داخل المنصة"
               hero
             />
@@ -844,8 +831,8 @@ export function EditorialHomepage() {
                 <ProductFrame
                   src={item.image}
                   mobileSrc={item.mobileImage}
-                  video={item.video}
-                  mobileVideo={item.mobileVideo}
+
+
                   alt={`واجهة ${item.kicker} داخل سهل`}
                 />
               </Reveal>
