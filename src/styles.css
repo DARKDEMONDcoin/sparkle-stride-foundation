@@ -47518,7 +47518,8 @@ body:has(.welcome-stage) .sahl-cookie-consent { display: none; }
    above the persistent navigation instead of being cropped by a fixed-height card. */
 @media (max-width: 767px) {
   .welcome-content {
-    display: block;
+    display: flex;
+    flex-direction: column;
     overflow-y: auto;
     overflow-x: hidden;
     overscroll-behavior-y: contain;
@@ -47526,6 +47527,7 @@ body:has(.welcome-stage) .sahl-cookie-consent { display: none; }
   }
   .welcome-centered {
     max-height: none;
+    flex-shrink: 0;
     margin: auto;
     padding-block: .8rem 1rem;
   }
