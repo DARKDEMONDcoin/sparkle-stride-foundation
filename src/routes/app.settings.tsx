@@ -1,11 +1,12 @@
 import { useEffect, useMemo, useState } from "react";
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useRouterState, useNavigate } from "@tanstack/react-router";
 import {
   Bell,
   Building2,
   CheckCircle2,
   ChevronLeft,
   CircleGauge,
+  CircleHelp,
   CreditCard,
   Download,
   Eye,
@@ -64,7 +65,7 @@ export const Route = createFileRoute("/app/settings")({
 
 const tabs = [
   { id: "workspace", label: "مساحة العمل", hint: "الهوية والتفضيلات", icon: Building2 },
-  { id: "account", label: "الحساب والأمان", hint: "بياناتك وكلمة المرور", icon: ShieldCheck },
+  { id: "account", label: "الملف الشخصي", hint: "بياناتك وأمان الحساب", icon: User },
   { id: "notifications", label: "التنبيهات", hint: "ما يصلك ومتى", icon: Bell },
   { id: "billing", label: "الاستخدام والباقات", hint: "حالة تجربتك", icon: CreditCard },
 ] as const;
@@ -72,7 +73,7 @@ const tabs = [
 type TabId = (typeof tabs)[number]["id"];
 
 const field =
-  "w-full rounded-lg border border-border bg-background px-3.5 py-2.5 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/15";
+  "settings-input w-full border px-3.5 py-2.5 outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/15";
 
 type NotificationDraft = Omit<NotificationPreferences, "user_id" | "created_at" | "updated_at">;
 
@@ -91,7 +92,9 @@ function isTab(value: string | null): value is TabId {
 }
 
 function SettingsPage() {
-  const [tab, setTab] = useState<TabId>("workspace");
+  const navigate = useNavigate();
+  const requestedTab = useRouterState({ select: state => (state.location.search as Record<string, unknown>).tab });
+  const tab: TabId = typeof requestedTab === "string" && isTab(requestedTab) ? requestedTab : "workspace";
   const [notice, setNotice] = useState<{ type: "success" | "error"; text: string } | null>(null);
   const { data: workspace, isLoading: workspaceLoading } = useWorkspace();
   const { data: profile, isLoading: profileLoading } = useProfile();
@@ -113,54 +116,37 @@ function SettingsPage() {
   }, [workspace, profile]);
 
   useEffect(() => {
-    const readTab = () => {
-      const requested = new URLSearchParams(window.location.search).get("tab");
-      if (isTab(requested)) setTab(requested);
-    };
-    readTab();
-    window.addEventListener("popstate", readTab);
-    return () => window.removeEventListener("popstate", readTab);
-  }, []);
-
-  useEffect(() => {
     if (!notice) return;
     const timeout = window.setTimeout(() => setNotice(null), 5000);
     return () => window.clearTimeout(timeout);
   }, [notice]);
 
   function chooseTab(next: TabId) {
-    setTab(next);
-    const url = new URL(window.location.href);
-    url.searchParams.set("tab", next);
-    window.history.pushState({}, "", url);
+    setNotice(null);
+    void navigate({ to: "/app/settings", search: { tab: next } });
   }
 
   const loading = workspaceLoading || profileLoading;
 
   return (
-    <AppShell title="الإعدادات" lead="تحكّم في مساحة عملك وحسابك من مكان واحد.">
-      <section className="mb-6 grid gap-4 md:grid-cols-[1fr_auto] md:items-center">
+    <AppShell title="الإعدادات" lead="مساحة العمل والحساب">
+      <div className="settings-studio">
+      <header className="settings-heading">
         <div>
-          <p className="mb-1 text-xs font-bold text-primary">مركز التحكّم</p>
-          <h1 className="font-display text-2xl font-black sm:text-3xl">اضبط سهل على طريقة عملك</h1>
-          <p className="mt-2 max-w-2xl text-sm leading-6 text-muted-foreground">
-            إعدادات واضحة للعلامة والحساب والتنبيهات، مع وصول مباشر إلى كل اتصال مهم.
-          </p>
+          <h2>{tab === "account" ? "الملف الشخصي" : "الإعدادات"}</h2>
+          <p>{tab === "account" ? "بياناتك الشخصية وأمان حسابك" : "مساحة العمل، التفضيلات، والباقات"}</p>
         </div>
-        <div className="min-w-52 rounded-lg border border-border bg-card p-4 shadow-sm">
-          <div className="mb-2 flex items-center justify-between text-xs font-bold">
-            <span>اكتمال مساحة العمل</span>
-            <span className="text-primary">{profileScore}٪</span>
-          </div>
+        <div className="settings-completion">
+          <div><span>اكتمال مساحة العمل</span><span className="font-semibold text-primary">{profileScore}٪</span></div>
           <Progress value={profileScore} aria-label={`اكتمال مساحة العمل ${profileScore}٪`} />
         </div>
-      </section>
+      </header>
 
       {notice ? (
         <div
           role="status"
           className={cn(
-            "mb-5 flex items-center gap-2 rounded-lg border px-4 py-3 text-sm font-semibold",
+            "settings-notice mb-5 flex items-center gap-2 rounded-lg border px-4 py-3 text-sm font-semibold",
             notice.type === "success"
               ? "border-primary/25 bg-primary/10 text-foreground"
               : "border-destructive/30 bg-destructive/10 text-destructive",
@@ -175,47 +161,19 @@ function SettingsPage() {
         </div>
       ) : null}
 
-      <div className="grid gap-6 lg:grid-cols-[17rem_minmax(0,1fr)]">
-        <nav
-          aria-label="أقسام الإعدادات"
-          className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-2 lg:mx-0 lg:block lg:space-y-1.5 lg:overflow-visible lg:px-0 lg:pb-0"
-        >
-          {tabs.map((item) => {
-            const active = tab === item.id;
-            return (
-              <Button
-                key={item.id}
-                type="button"
-                variant="ghost"
-                onClick={() => chooseTab(item.id)}
-                aria-current={active ? "page" : undefined}
-                className={cn(
-                  "h-auto min-w-max justify-start gap-3 rounded-lg border px-3.5 py-3 text-start lg:w-full",
-                  active
-                    ? "border-primary/25 bg-primary/10 text-foreground shadow-sm hover:bg-primary/10"
-                    : "border-transparent text-muted-foreground hover:border-border hover:bg-card hover:text-foreground",
-                )}
-              >
-                <span
-                  className={cn(
-                    "grid size-9 shrink-0 place-items-center rounded-md",
-                    active ? "bg-primary text-primary-foreground" : "bg-secondary",
-                  )}
-                >
-                  <item.icon className="size-4" />
-                </span>
-                <span className="min-w-0">
-                  <span className="block text-sm font-extrabold">{item.label}</span>
-                  <span className="hidden text-xs font-medium text-muted-foreground lg:block">
-                    {item.hint}
-                  </span>
-                </span>
-              </Button>
-            );
-          })}
+      <div className="settings-layout">
+        <nav aria-label="أقسام الإعدادات" className="settings-nav">
+          <p className="settings-nav-label">إدارة حسابك</p>
+          {tabs.map(item => <Button key={item.id} type="button" variant="ghost"
+            onClick={() => chooseTab(item.id)} aria-current={tab === item.id ? "page" : undefined}
+            className={cn("settings-nav-button", tab === item.id && "is-active")}>
+            <item.icon className="size-4 shrink-0" />
+            <span className="min-w-0"><strong>{item.label}</strong><small>{item.hint}</small></span>
+          </Button>)}
+          <Link to="/app/help" className="settings-nav-help"><CircleHelp className="size-4" />المساعدة والدعم<ChevronLeft className="ms-auto size-3" /></Link>
         </nav>
 
-        <main className="min-w-0">
+        <div className="min-w-0" aria-label={tabs.find(item => item.id === tab)?.label}>
           {loading ? <SettingsLoading /> : null}
           {!loading && tab === "workspace" && workspace ? (
             <WorkspacePanel workspace={workspace} onNotice={setNotice} />
@@ -225,7 +183,8 @@ function SettingsPage() {
           ) : null}
           {tab === "notifications" ? <NotificationsPanel onNotice={setNotice} /> : null}
           {tab === "billing" ? <BillingPanel doneCount={doneCount} loading={tasksLoading} /> : null}
-        </main>
+        </div>
+      </div>
       </div>
     </AppShell>
   );
@@ -241,12 +200,12 @@ function PanelHeader({
   description: string;
 }) {
   return (
-    <header className="mb-6 flex gap-3 border-b border-border pb-5">
-      <span className="grid size-11 shrink-0 place-items-center rounded-lg bg-primary/10 text-primary">
+    <header className="settings-panel-heading">
+      <span className="shrink-0">
         <Icon className="size-5" />
       </span>
       <div>
-        <h2 className="font-display text-xl font-black">{title}</h2>
+        <h2 className="font-semibold">{title}</h2>
         <p className="mt-1 text-sm text-muted-foreground">{description}</p>
       </div>
     </header>
@@ -255,7 +214,7 @@ function PanelHeader({
 
 function SettingsCard({ children }: { children: React.ReactNode }) {
   return (
-    <section className="rounded-lg border border-border bg-card p-5 shadow-sm sm:p-7">
+    <section className="settings-panel">
       {children}
     </section>
   );
@@ -407,7 +366,7 @@ function Field({
   children: React.ReactNode;
 }) {
   return (
-    <label className="block">
+    <label className="settings-field">
       <span className="mb-2 flex items-center gap-1 text-sm font-extrabold">
         {label}
         {required ? <span className="text-destructive">*</span> : null}
@@ -444,7 +403,8 @@ function AccountPanel({ profile, onNotice }: { profile: ProfileData; onNotice: N
           description="بياناتك الشخصية واللغة التي يكتب بها فريقك."
         />
         {userId ? (
-          <div className="mb-6 rounded-lg border border-border bg-secondary/40 p-4">
+          <div className="settings-avatar-editor">
+             <div><h3>{profile.full_name || "صورتك الشخصية"}</h3><p className="settings-avatar-caption">الصورة الشخصية</p></div>
             <AvatarUploader
               userId={userId}
               path={profile.avatar_url}
@@ -736,11 +696,11 @@ function NotificationsPanel({ onNotice }: { onNotice: NoticeSetter }) {
         title="التنبيهات"
         description="اختر الأحداث المهمة فقط، ويمكنك تعديلها في أي وقت."
       />
-      <div className="space-y-3">
+      <div>
         {options.map((option) => (
           <div
             key={option.key}
-            className="flex items-center justify-between gap-5 rounded-lg border border-border p-4"
+            className="settings-notification-row"
           >
             <div>
               <p className="text-sm font-extrabold">{option.title}</p>
