@@ -47864,3 +47864,17 @@ body:has(.chat-composer-dock) .liquid-glass-sahl.sahl-cookie-consent {
   .sahl-team-card-title h2 { font-size:1.5rem; }
 }
 @media(prefers-reduced-motion:reduce){.sahl-workers-mega,.sahl-white-mobile{animation:none}.sahl-white-links svg,.sahl-mobile-workers svg{transition:none}}
+
+/* Editorial employee guide semantic palette. */
+:root {
+  --guide-paper: oklch(1 0 0);
+  --guide-ink: oklch(0.218 0 0);
+  --guide-accent: oklch(0.582 0.181 33.3);
+  --guide-mark: oklch(0.646 0.222 41.1);
+  --guide-copy: oklch(0.446 0.03 256.8);
+  --guide-muted: oklch(0.551 0.023 264.4);
+  --guide-soft: oklch(0.985 0.002 247.8);
+  --guide-line: oklch(0.967 0.003 264.5);
+  --guide-focus: var(--guide-accent);
+  --guide-shadow: 0 8px 30px -22px color-mix(in oklab, var(--guide-ink) 25%, transparent);
+}
