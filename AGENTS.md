@@ -43,9 +43,4 @@
 - Chat media from users, employees, and generators uses `ChatAttachments` for consistent responsive sizing and fullscreen viewing.
 - AccountMenu owns UI; AppShell owns auth/data. Account entry points only; uniform stays in settings to avoid duplicates.
 - Settings use router search state for links/history.
-- Public employee pages use team.ts, employee-guides.ts and shared skills for grounded content.
 - Employee IDs (sonny/eva/sam=Siraj/Amal/Salem) are permanent; never rename (stored in DB, URLs).
-
-- Public compact nav uses a focus-managed modal drawer with independent scrolling to keep menus bounded.
-
-- Homepage device media uses per-employee desktop/mobile CDN screenshot pairs captured from the current chat UI with synthetic public data; never publish private account content or let legacy videos override the screenshots. Why: accurate, privacy-safe before-send previews on each device.
