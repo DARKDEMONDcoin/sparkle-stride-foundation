@@ -5,39 +5,6 @@ import { Portrait } from "@/components/site/Portrait";
 import { team } from "@/data/team";
 import { cn } from "@/lib/utils";
 
-const copy: Record<string, { promise: string; tasks: string[]; proof: string }> = {
-  sonny: {
-    promise: "يحوّل خطتك إلى حضور يومي لا يتوقف.",
-    tasks: ["خطة محتوى شهرية", "تصميم ونشر على المنصات", "متابعة التفاعل"],
-    proof: "حتى ١٢٠ منشورًا شهريًا",
-  },
-  eva: {
-    promise: "تحمي وقتك من البريد والمواعيد والتفاصيل.",
-    tasks: ["فرز البريد والأولويات", "تنظيم الاجتماعات", "ملخص يومي تنفيذي"],
-    proof: "يوفّر حتى ١٢ ساعة أسبوعيًا",
-  },
-  sam: {
-    promise: "يبني خط مبيعات ويتابع الفرص بدلًا منك.",
-    tasks: ["بحث العملاء المحتملين", "رسائل مخصصة", "تحديث فرص البيع"],
-    proof: "حتى ١٬٥٠٠ تواصل شهريًا",
-  },
-  nour: {
-    promise: "تجعل علامتك إجابة يكتشفها الناس ويثقون بها.",
-    tasks: ["بحث الكلمات والفرص", "محتوى عربي أصيل", "تحسين الظهور والصفحات"],
-    proof: "حتى ٢٠ مقالًا شهريًا",
-  },
-  dana: {
-    promise: "تعطي كل فكرة شكلًا واضحًا ومتسقًا مع هويتك.",
-    tasks: ["إعلانات ومنشورات", "قوالب وهوية بصرية", "مقاسات لكل منصة"],
-    proof: "حتى ٢٠٠ تصميم شهريًا",
-  },
-  adam: {
-    promise: "يخبرك ماذا تعني الأرقام وما القرار التالي.",
-    tasks: ["جمع المؤشرات", "تنبيهات الانخفاض", "توصيات قابلة للتنفيذ"],
-    proof: "١٥ مصدر بيانات في لوحة واحدة",
-  },
-};
-
 export function Employees() {
   const [active, setActive] = useState(team[0]?.id ?? "sonny");
   return (
@@ -56,8 +23,6 @@ export function Employees() {
 
         <div className="employee-editorial-grid">
           {team.map((member, index) => {
-            const detail = copy[member.id];
-            if (!detail) return null;
             const on = active === member.id;
             return (
               <Reveal key={member.id} delay={index * 55}>
@@ -80,13 +45,13 @@ export function Employees() {
                   <div className="employee-editorial-copy">
                     <p>{member.role}</p>
                     <h3>{member.name}</h3>
-                    <strong>{detail.promise}</strong>
+                    <strong>{member.title}</strong>
                     <ul>
-                      {detail.tasks.map((task) => (
+                      {member.tasks.slice(0, 3).map((task) => (
                         <li key={task}>{task}</li>
                       ))}
                     </ul>
-                    <div className="employee-proof">{detail.proof}</div>
+                    <div className="employee-proof">{member.metrics[0]?.v} {member.metrics[0]?.k}</div>
                   </div>
                 </article>
               </Reveal>

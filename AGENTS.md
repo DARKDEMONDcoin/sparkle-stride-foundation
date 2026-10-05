@@ -19,7 +19,7 @@
 - Employee tools live in `employee-toolbelt.ts`; browser tasks stop before payment.
 - Chat action commands use `chat-commands.ts`; edits use `reviseEmployeeAction`.
 - All employee paths derive research depth, reasoning effort, risk, and success checks from `src/lib/turn-plan.ts`; this prevents conflicting execution decisions.
-- Telegram buttons stay inside the chat: `telegram-ui*.server.ts` keep no `publicOrigin()` deep links, and manual platform credentials are collected in-chat via `src/lib/telegram-connect.server.ts` so no flow depends on the website.
+- Telegram actions and manual credentials stay in-chat; no flow depends on website deep links.
 - Brand data is optional per turn via `src/lib/brand-relevance.ts` (opt-out/opt-in from recent user messages); forcing the brand name into every post broke user intent.
 - Chat messages persist approval tasks and safe pending actions across refreshes.
 - Semantic memory lives in `knowledge_chunks` (google/gemini-embedding-2, 3072 dims) via `src/lib/knowledge.server.ts`; never mix embedding models in that column.
@@ -43,3 +43,4 @@
 - Chat media from users, employees, and generators uses `ChatAttachments` for consistent responsive sizing and fullscreen viewing.
 - AccountMenu owns presentation and scoped styles; AppShell owns auth/data so account rules stay unchanged.
 - Settings use router search state so links and browser history show the requested section.
+- Public employee navigation and pages share `src/data/team.ts` as their content source to prevent drift.
