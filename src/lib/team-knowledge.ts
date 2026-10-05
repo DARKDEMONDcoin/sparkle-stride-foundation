@@ -9,6 +9,16 @@ import { authorityBlock } from "./authority";
 import { complianceBlock, PUBLIC_CONTENT_EMPLOYEES } from "./compliance";
 import { platformLimitsBlock } from "./platform-limits";
 
+/**
+ * Stable internal employee IDs (stored in DB rows, URLs, Telegram commands).
+ * They intentionally differ from the displayed Arabic names — never rename them.
+ *   sonny → سِراج (Siraj)  — Social media manager
+ *   eva   → أمَل  (Amal)   — Executive assistant
+ *   sam   → سالم  (Salem)  — Sales
+ *   nour  → نور   (Nour)   — Content writer
+ *   dana  → دانة  (Dana)   — Designer
+ *   adam  → آدم   (Adam)   — Analyst
+ */
 export type EmployeeId = "sonny" | "eva" | "sam" | "nour" | "dana" | "adam";
 
 export const employeeDirectory: Record<
