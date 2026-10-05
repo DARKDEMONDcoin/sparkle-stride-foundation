@@ -1,14 +1,12 @@
-import { Bell, ChevronLeft, CircleHelp, CreditCard, Loader2, LogOut, Settings2, Shirt, User } from "lucide-react";
+import { ChevronLeft, Loader2, LogOut, Settings2, User } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { COUNTRIES } from "@/data/team-portraits";
 import type { ReactNode } from "react";
 
 type Props = {
   open: boolean; onOpenChange: (open: boolean) => void; avatar: ReactNode;
-  name: string | null; email: string | null; country: string;
-  onCountryChange: (country: string) => void; onPhoto: () => void;
+  name: string | null; email: string | null; onPhoto: () => void;
   onSignOut: () => void; busy: boolean; error: string | null;
 };
 
@@ -34,22 +32,7 @@ export function AccountMenu(props: Props) {
         <Button asChild variant="ghost" className="account-menu-link">
           <Link to="/app/settings" search={{ tab: "workspace" }} onClick={close}><Settings2 /><span>الإعدادات</span><ChevronLeft className="account-menu-arrow" /></Link>
         </Button>
-        <Button asChild variant="ghost" className="account-menu-link">
-          <Link to="/app/settings" search={{ tab: "notifications" }} onClick={close}><Bell /><span>تفضيلات التنبيهات</span><ChevronLeft className="account-menu-arrow" /></Link>
-        </Button>
-        <Button asChild variant="ghost" className="account-menu-link">
-          <Link to="/app/settings" search={{ tab: "billing" }} onClick={close}><CreditCard /><span>الاستخدام والباقات</span><ChevronLeft className="account-menu-arrow" /></Link>
-        </Button>
-        <Button asChild variant="ghost" className="account-menu-link">
-          <Link to="/app/help" onClick={close}><CircleHelp /><span>المساعدة والدعم</span><ChevronLeft className="account-menu-arrow" /></Link>
-        </Button>
       </nav>
-      <div className="account-menu-uniform">
-        <label htmlFor="account-uniform"><Shirt className="size-4" />زيّ الفريق</label>
-        <select id="account-uniform" value={props.country} onChange={event => props.onCountryChange(event.target.value)}>
-          {COUNTRIES.map(country => <option key={country.code} value={country.code}>{country.name}</option>)}
-        </select>
-      </div>
       <div className="account-menu-footer">
         {props.error && <p role="alert" className="mb-2 text-xs text-destructive">{props.error}</p>}
         <Button type="button" variant="ghost" disabled={props.busy} onClick={props.onSignOut} className="account-menu-logout">

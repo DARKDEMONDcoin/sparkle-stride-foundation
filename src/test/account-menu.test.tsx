@@ -5,17 +5,14 @@ import { AccountMenu } from "@/components/app/AccountMenu";
 vi.mock("@tanstack/react-router", () => ({ Link: ({ to, search, children, ...props }: any) => <a href={`${to}${search?.tab ? `?tab=${search.tab}` : ""}`} {...props}>{children}</a> }));
 
 describe("account menu", () => {
-  it("separates profile/settings and keeps destinations, uniform, and logout usable", () => {
-    const onCountryChange = vi.fn();
+  it("keeps account destinations without repeated navigation or uniform controls", () => {
     const onSignOut = vi.fn();
-    render(<AccountMenu open onOpenChange={vi.fn()} avatar={<span>صورة</span>} name="أحمد علي" email="ahmed@example.com" country="EG" onCountryChange={onCountryChange} onPhoto={vi.fn()} onSignOut={onSignOut} busy={false} error={null} />);
+    render(<AccountMenu open onOpenChange={vi.fn()} avatar={<span>صورة</span>} name="أحمد علي" email="ahmed@example.com" onPhoto={vi.fn()} onSignOut={onSignOut} busy={false} error={null} />);
     expect(screen.getByRole("link", { name: "الملف الشخصي" })).toHaveAttribute("href", "/app/settings?tab=account");
     expect(screen.getByRole("link", { name: "الإعدادات" })).toHaveAttribute("href", "/app/settings?tab=workspace");
-    expect(screen.getByRole("link", { name: "تفضيلات التنبيهات" })).toHaveAttribute("href", "/app/settings?tab=notifications");
-    expect(screen.getByRole("link", { name: "الاستخدام والباقات" })).toHaveAttribute("href", "/app/settings?tab=billing");
-    expect(screen.getByRole("link", { name: "المساعدة والدعم" })).toHaveAttribute("href", "/app/help");
-    fireEvent.change(screen.getByLabelText("زيّ الفريق"), { target: { value: "SA" } });
-    expect(onCountryChange).toHaveBeenCalledWith("SA");
+    expect(screen.getAllByRole("link")).toHaveLength(2);
+    expect(screen.queryByRole("link", { name: "المساعدة والدعم" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("combobox")).not.toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: "تسجيل الخروج" }));
     expect(onSignOut).toHaveBeenCalledOnce();
   });
