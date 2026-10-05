@@ -47806,6 +47806,32 @@ body:has(.chat-composer-dock) .liquid-glass-sahl.sahl-cookie-consent {
 .sahl-member-accordion [data-radix-accordion-content] { color:var(--home-copy); line-height:1.85; }
 .sahl-member-trust { display:flex; align-items:center; gap:8px; margin-top:28px; color:var(--home-copy); font-size:.78rem; }
 .sahl-member-trust svg { width:16px; color:var(--home-gold); }
+.sahl-team-directory { width:min(1120px,calc(100% - 40px)); margin-inline:auto; padding:58px 0 92px; }
+.sahl-team-directory-tools { display:flex; flex-wrap:wrap; align-items:center; gap:12px; padding-bottom:26px; border-bottom:1px solid var(--home-line); }
+.sahl-team-directory-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); border-inline-start:1px solid var(--home-line); }
+.sahl-team-directory-grid > * { min-width:0; }
+.sahl-team-directory-card { height:100%; display:flex; flex-direction:column; padding:34px; border-inline-end:1px solid var(--home-line); border-bottom:1px solid var(--home-line); background:var(--home-bg); transition:background-color .25s ease; }
+.sahl-team-directory-card:hover { background:var(--home-soft); }
+.sahl-team-card-person { display:grid; grid-template-columns:28px 86px minmax(0,1fr); align-items:start; gap:14px; }
+.sahl-team-card-index { color:var(--home-copy); font-size:.68rem; }
+.sahl-team-card-photo { width:86px; height:104px; overflow:hidden; border-radius:7px; background:var(--home-muted); }
+.sahl-team-card-title p { color:var(--home-terracotta); font-size:.72rem; font-weight:800; }
+.sahl-team-card-title h2 { margin-top:6px; font-family:"Almarai","IBM Plex Sans Arabic",sans-serif; font-size:1.8rem; }
+.sahl-team-card-title strong { display:block; margin-top:8px; line-height:1.5; }
+.sahl-team-card-summary { margin-top:24px; color:var(--home-copy); line-height:1.85; }
+.sahl-team-card-tasks { margin:22px 0 0; padding:0; display:grid; gap:10px; list-style:none; }
+.sahl-team-card-tasks li { display:flex; align-items:flex-start; gap:8px; font-size:.8rem; line-height:1.6; }
+.sahl-team-card-tasks svg { width:15px; flex:0 0 auto; margin-top:4px; color:var(--home-teal); }
+.sahl-team-card-metrics { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); margin-top:25px; border-block:1px solid var(--home-line); }
+.sahl-team-card-metrics div { padding:14px 8px; border-inline-end:1px solid var(--home-line); }
+.sahl-team-card-metrics div:last-child { border-inline-end:0; }
+.sahl-team-card-metrics strong,.sahl-team-card-metrics span { display:block; }
+.sahl-team-card-metrics strong { color:var(--home-terracotta); font-size:1.05rem; }
+.sahl-team-card-metrics span { margin-top:3px; color:var(--home-copy); font-size:.62rem; }
+.sahl-team-card-apps { margin-top:22px; }
+.sahl-team-card-link { margin-top:auto; padding-top:26px; display:inline-flex; align-items:center; gap:8px; color:var(--home-ink); font-size:.8rem; font-weight:800; text-decoration:none; }
+.sahl-team-card-link svg { width:16px; color:var(--home-terracotta); transition:transform .2s ease; }
+.sahl-team-directory-card:hover .sahl-team-card-link svg { transform:translateX(-4px); }
 
 @media(max-width:1024px){
   .sahl-mobile-workers > button { width:100%; min-height:48px; display:flex; align-items:center; justify-content:space-between; padding:8px; color:var(--home-ink); }
@@ -47830,5 +47856,11 @@ body:has(.chat-composer-dock) .liquid-glass-sahl.sahl-cookie-consent {
   .sahl-workflow-list li:first-child { border-top:1px solid var(--home-line); }
   .sahl-workflow-list svg,.sahl-workflow-list p { margin-top:0; }
   .sahl-member-compare-head span,.sahl-member-compare-row > span { padding:14px 12px; font-size:.78rem; }
+  .sahl-team-directory { width:min(100% - 32px,1120px); padding-block:40px 64px; }
+  .sahl-team-directory-grid { grid-template-columns:1fr; }
+  .sahl-team-directory-card { padding:26px 20px; }
+  .sahl-team-card-person { grid-template-columns:22px 72px minmax(0,1fr); gap:10px; }
+  .sahl-team-card-photo { width:72px; height:88px; }
+  .sahl-team-card-title h2 { font-size:1.5rem; }
 }
 @media(prefers-reduced-motion:reduce){.sahl-workers-mega,.sahl-white-mobile{animation:none}.sahl-white-links svg,.sahl-mobile-workers svg{transition:none}}
