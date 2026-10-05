@@ -72,6 +72,8 @@ type Errors = Record<string, string>;
 
 function arabicError(message: string) {
   const m = message.toLowerCase();
+  if (m.includes("access_denied") || m.includes("cancelled") || m.includes("canceled"))
+    return "تم إلغاء تسجيل الدخول عبر Google — يمكنك المحاولة مرة أخرى.";
   if (
     m.includes("already registered") ||
     m.includes("already been registered") ||
