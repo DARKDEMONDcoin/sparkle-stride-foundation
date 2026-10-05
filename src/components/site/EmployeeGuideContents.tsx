@@ -23,9 +23,12 @@ export function EmployeeGuideContents({ employeeId }: { employeeId: string }) {
     setActive("overview");
     const update = () => {
       let current = "overview";
+      const scrollPadding = parseFloat(getComputedStyle(document.documentElement).scrollPaddingTop) || 0;
       for (const section of guideSections) {
         const el = document.getElementById(section.id);
-        if (el && el.getBoundingClientRect().top <= 210) current = section.id;
+        if (!el) continue;
+        const scrollMargin = parseFloat(getComputedStyle(el).scrollMarginTop) || 0;
+        if (el.getBoundingClientRect().top <= scrollPadding + scrollMargin + 12) current = section.id;
       }
       setActive(current);
     };

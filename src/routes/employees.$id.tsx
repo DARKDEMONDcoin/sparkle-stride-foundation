@@ -91,7 +91,7 @@ function MemberPage() {
               <span className="employee-guide-portrait"><Portrait memberId={id} name={m.name} className="size-full" eager /></span>
               <div><h1>{m.name}</h1><p>{m.role}</p></div>
             </div>
-            <p className="employee-guide-lead">{guide.introduction[0].split(".")[0]}.</p>
+            <p className="employee-guide-lead">{guide.introduction[0]?.split(".")[0] ?? m.title}.</p>
             <div className="employee-guide-header-actions">
               <Button asChild className="employee-guide-cta"><Link to="/welcome">وظّف {m.name} الآن <ArrowLeft /></Link></Button>
               <Button asChild variant="outline" className="employee-guide-secondary"><Link to="/pricing">الأسعار</Link></Button>

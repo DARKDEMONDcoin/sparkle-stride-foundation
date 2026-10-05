@@ -18,7 +18,7 @@ export type EmployeeGuide = {
   review: string[];
 };
 
-export const employeeGuides: Record<string, EmployeeGuide> = {
+export const employeeGuides: Record<"sonny" | "eva" | "sam" | "nour" | "dana" | "adam", EmployeeGuide> = {
   sonny: {
     introduction: [
       "سِراج هو الموظف الرقمي الذي يساعدك على إدارة محتوى حساباتك من الفكرة الأولى إلى النسخة المعدّة للنشر. يبدأ بفهم ما تريد أن يعرفه الجمهور أو يفعله: التعرف على منتج، فهم خدمة، زيارة صفحة، أو التواصل معك. ثم يحوّل الهدف إلى موضوعات وصيغ مناسبة لكل منصة، بدلاً من تكرار النص نفسه في كل مكان.",

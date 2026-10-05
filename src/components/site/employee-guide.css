@@ -1,20 +1,11 @@
 .employee-guide-page {
-  --guide-paper: #ffffff;
-  --guide-ink: #1a1a1a;
-  --guide-accent: #d14328;
-  --guide-mark: #ea580c;
-  --guide-copy: #4b5563;
-  --guide-muted: #6b7280;
-  --guide-soft: #f9fafb;
-  --guide-line: #f3f4f6;
-  --guide-focus: #d14328;
-  --guide-shadow: 0 8px 30px -22px color-mix(in oklab, var(--guide-ink) 25%, transparent);
   background: var(--guide-paper);
   color: var(--guide-ink);
   font-family: "IBM Plex Sans Arabic", sans-serif;
   letter-spacing: 0;
 }
 .employee-guide-page :is(h1,h2,h3,h4,p,a,button) { letter-spacing:0; }
+body:has(.employee-guide-page) .sahl-white-nav { background:var(--guide-paper); }
 .employee-guide-page main { overflow:visible; }
 .employee-guide-layout { max-width:1180px; margin-inline:auto; padding:128px 28px 72px; display:grid; grid-template-columns:224px minmax(0,1fr); gap:70px; align-items:start; }
 .employee-guide-contents { position:sticky; top:110px; padding-top:16px; }
@@ -143,5 +134,6 @@
   .employee-guide-mobile-action { display:flex; position:fixed; inset-inline:0; bottom:0; z-index:40; gap:10px; padding:16px 24px calc(16px + env(safe-area-inset-bottom)); background:var(--guide-paper); border-top:1px solid var(--guide-line); }
   .employee-guide-mobile-action .employee-guide-cta { flex:1; min-width:0; white-space:normal; padding-inline:12px; font-size:14px; }
   .employee-guide-mobile-action .employee-guide-secondary { padding-inline:22px; }
+  body:has(.employee-guide-page) .liquid-glass-sahl.sahl-cookie-consent { bottom:calc(96px + env(safe-area-inset-bottom)); }
 }
 @media(prefers-reduced-motion:reduce) { .employee-guide-page * { transition:none!important; scroll-behavior:auto!important; } }
