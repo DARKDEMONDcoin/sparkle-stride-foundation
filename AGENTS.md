@@ -12,7 +12,7 @@
 - Social outputs use `src/lib/post-format.ts` across site, queue, and Telegram.
 - Cloud browsing uses `src/lib/cloud-browser.server.ts`; sensitive intents require owner approval.
 - Multi-step browsing uses `browser-agent.server.ts`; page content is untrusted and sensitive clicks need approval.
-- Global destinations live in the AppShell rail; employee chat, calendar, and guideline pages retain the employee topbar, while contextual design editing stays inside chat.
+- Global destinations stay in AppShell rail; employee pages retain topbar; design editing stays in chat.
 - The desktop AppShell sidebar collapses to an employee icon rail and persists its state locally; keep fixed chat overlays aligned to its width so the conversation stays usable.
 - Rail expands independently; chat controls clear both sidebars; embedded chat hides the rail to avoid overlap.
 - `runEmployeeTurn` delegates out-of-specialty work via smartHandoff while keeping the conversation.
@@ -41,7 +41,9 @@
 - Referral earnings require verified payments and refund maturity; users cannot write them.
 - Feedback/support records are private behind RLS.
 - Chat media from users, employees, and generators uses `ChatAttachments` for consistent responsive sizing and fullscreen viewing.
-- AccountMenu owns presentation and scoped styles; AppShell owns auth/data so account rules stay unchanged.
-- Settings use router search state so links and browser history show the requested section.
-- Public employee pages use team.ts with employee-guides.ts and shared skills for consistent, grounded content.
+- AccountMenu owns UI; AppShell owns auth/data. Account entry points only; uniform stays in settings to avoid duplicates.
+- Settings use router search state for links/history.
+- Public employee pages use team.ts, employee-guides.ts and shared skills for grounded content.
 - Employee IDs (sonny/eva/sam=Siraj/Amal/Salem) are permanent; never rename (stored in DB, URLs).
+
+- Public compact nav uses a focus-managed modal drawer with independent scrolling to keep menus bounded.

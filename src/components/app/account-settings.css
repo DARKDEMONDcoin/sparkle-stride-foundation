@@ -13,9 +13,6 @@
 .account-menu-primary { height:58px; font-weight:700; margin-bottom:4px; }
 .account-menu-icon { display:grid; place-items:center; width:38px; height:38px; border-radius:11px; background:var(--foreground); color:var(--background); flex-shrink:0; }
 .account-menu-icon svg { width:19px; height:19px; }
-.account-menu-uniform { margin:0 16px 16px; padding:15px; background:var(--secondary); border:1px solid var(--border); border-radius:16px; display:flex; gap:10px; align-items:center; }
-.account-menu-uniform label { display:flex; align-items:center; gap:8px; font-weight:600; font-size:12px; flex:1; }
-.account-menu-uniform select { background:var(--background); border:1px solid var(--border); border-radius:8px; height:38px; width:128px; padding:0 9px; font-size:12px; min-width:0; }
 .account-menu-footer { border-top:1px solid var(--border); padding:8px 16px 12px; }
 .account-menu-logout { width:100%; justify-content:center; gap:10px; color:var(--destructive); font-size:13px; border-radius:10px; }
 .account-menu-logout:hover { background:color-mix(in oklab,var(--destructive) 6%,var(--background)); color:var(--destructive); }

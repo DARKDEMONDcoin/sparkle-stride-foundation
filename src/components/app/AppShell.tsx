@@ -8,7 +8,6 @@ import { Menu, X, User, LogOut, PanelRightClose, PanelRightOpen, ArrowLeft, Mess
 import { team } from "@/data/team";
 import { AccountMenu } from "@/components/app/AccountMenu";
 import "@/components/app/account-settings.css";
-import { useRegion } from "@/hooks/use-region";
 import { supabase } from "@/integrations/supabase/client";
 import { GUEST_EMAIL } from "@/lib/guest.functions";
 
@@ -216,12 +215,11 @@ function GuestBar() {
   );
 }
 
-/** قائمة المستخدم: اسمه وبريده، والملف الشخصي، وزي الفريق، وتسجيل الخروج. */
+/** Account entry points only; global destinations remain in the rail. */
 function UserMenu({ name }: { name: string | null }) {
   const [open, setOpen] = useState(false);
   const [photoOpen, setPhotoOpen] = useState(false);
   const [email, setEmail] = useState<string | null>(null);
-  const { country, setCountry } = useRegion();
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -237,7 +235,7 @@ function UserMenu({ name }: { name: string | null }) {
 
   return <>
     <AccountMenu open={open} onOpenChange={setOpen} avatar={<UserAvatar />} name={name} email={email}
-      country={country} onCountryChange={setCountry} busy={busy} error={error}
+      busy={busy} error={error}
       onPhoto={() => { setOpen(false); setPhotoOpen(true); }}
       onSignOut={async () => {
         setBusy(true); setError(null);
