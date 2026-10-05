@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { createPortal } from "react-dom";
+import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { Link } from "@tanstack/react-router";
 import {
   BarChart3,
@@ -17,6 +17,7 @@ import { LogoMark } from "@/components/site/LogoMark";
 import { Portrait } from "@/components/site/Portrait";
 import { Button } from "@/components/ui/button";
 import { team } from "@/data/team";
+import "@/components/site/navigation.css";
 
 const groups = [
   {
@@ -90,6 +91,7 @@ function NavLink({ to, ...rest }: { to: MenuPath; role?: string; onClick?: () =>
 export function Nav({ variant = "over" }: { variant?: "over" | "solid" }) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [mobileWorkersOpen, setMobileWorkersOpen] = useState(true);
+  const [mobileGroup, setMobileGroup] = useState<string | null>(null);
   const [active, setActive] = useState<string | null>(null);
   const [scrolled, setScrolled] = useState(false);
   const [hidden, setHidden] = useState(false);
@@ -97,6 +99,13 @@ export function Nav({ variant = "over" }: { variant?: "over" | "solid" }) {
   const scrollDistance = useRef(0);
   const scrollDirection = useRef<"up" | "down" | null>(null);
   const frame = useRef<number | null>(null);
+
+  useEffect(() => {
+    const desktop = window.matchMedia("(min-width: 1025px)");
+    const closeOnDesktop = () => { if (desktop.matches) setMobileOpen(false); };
+    desktop.addEventListener("change", closeOnDesktop);
+    return () => desktop.removeEventListener("change", closeOnDesktop);
+  }, []);
 
   useEffect(() => {
     const onScroll = () => {
@@ -259,80 +268,51 @@ export function Nav({ variant = "over" }: { variant?: "over" | "solid" }) {
             </Link>
           </Button>
         </div>
-        <Button
+        <DialogPrimitive.Root open={mobileOpen} onOpenChange={setMobileOpen}>
+        <DialogPrimitive.Trigger asChild><Button
           className="sahl-white-menu"
           type="button"
           variant="ghost"
           size="icon"
-          onClick={() => setMobileOpen((value) => !value)}
           aria-label={mobileOpen ? "إغلاق القائمة" : "فتح القائمة"}
         >
           {mobileOpen ? <X /> : <Menu />}
-        </Button>
-      </nav>
-      {mobileOpen &&
-        createPortal(
-        <div className="sahl-white-mobile">
-          <div>
-            <section className="sahl-mobile-workers">
-              <Button
-                type="button"
-                variant="ghost"
-                aria-expanded={mobileWorkersOpen}
-                onClick={() => setMobileWorkersOpen((value) => !value)}
-              >
-                <b>الموظفون</b>
-                <ChevronDown />
-              </Button>
-              {mobileWorkersOpen && (
-                <div className="sahl-mobile-worker-list">
-                  {team.map((member) => (
-                    <Link
-                      key={member.id}
-                      to="/employees/$id"
-                      params={{ id: member.id }}
-                      activeProps={{ className: "is-current" }}
-                      onClick={() => setMobileOpen(false)}
-                    >
-                      <span className="sahl-worker-avatar">
-                        <Portrait memberId={member.id} name={member.name} />
-                      </span>
-                      <span><b>{member.name}</b><small>{member.role}</small></span>
-                      <span>←</span>
-                    </Link>
-                  ))}
-                  <Link to="/employees" onClick={() => setMobileOpen(false)}>
-                    تعرّف على الفريق كاملاً<span>←</span>
-                  </Link>
-                </div>
-              )}
-            </section>
-            {groups.map((group) => (
-              <section key={group.label}>
-                <b>{group.label}</b>
-                {group.links.map((item) => (
-                  <NavLink key={item.to} to={item.to} onClick={() => setMobileOpen(false)}>
-                    {item.label}
-                    <span>←</span>
-                  </NavLink>
-                ))}
+        </Button></DialogPrimitive.Trigger>
+        <DialogPrimitive.Portal>
+          <DialogPrimitive.Overlay className="sahl-nav-backdrop" />
+          <DialogPrimitive.Content className="sahl-nav-drawer" dir="rtl" aria-describedby={undefined}>
+            <header className="sahl-nav-drawer-header">
+              <DialogPrimitive.Title className="sahl-nav-drawer-brand"><LogoMark size={30} />سهل</DialogPrimitive.Title>
+              <DialogPrimitive.Close asChild><Button variant="ghost" size="icon" aria-label="إغلاق القائمة"><X /></Button></DialogPrimitive.Close>
+            </header>
+            <nav className="sahl-nav-drawer-scroll" aria-label="قائمة الموقع">
+              <section>
+                <Button type="button" variant="ghost" className="sahl-nav-group-toggle" aria-expanded={mobileWorkersOpen} aria-controls="public-mobile-workers" onClick={() => setMobileWorkersOpen(value => !value)}>الموظفون<ChevronDown /></Button>
+                {mobileWorkersOpen && <div className="sahl-nav-workers" id="public-mobile-workers">
+                  {team.map(member => <Link key={member.id} to="/employees/$id" params={{ id:member.id }} activeProps={{ className:"is-current" }} onClick={() => setMobileOpen(false)}>
+                    <span className="sahl-worker-avatar"><Portrait memberId={member.id} name={member.name} /></span>
+                    <span><b>{member.name}</b><small>{member.role}</small></span><span>←</span>
+                  </Link>)}
+                  <Link to="/employees" onClick={() => setMobileOpen(false)}>تعرّف على الفريق كاملاً<span>←</span></Link>
+                </div>}
               </section>
-            ))}
-            <Link to="/integrations" onClick={() => setMobileOpen(false)}>
-              التكاملات<span>←</span>
-            </Link>
-            <Link to="/pricing" onClick={() => setMobileOpen(false)}>
-              الأسعار<span>←</span>
-            </Link>
-          </div>
-          <Button asChild>
-            <Link to="/welcome">
-              ابدأ الآن
-            </Link>
-          </Button>
-        </div>,
-        document.body,
-      )}
+              {groups.map((group,index) => <section key={group.label}>
+                <Button type="button" variant="ghost" className="sahl-nav-group-toggle" aria-expanded={mobileGroup === group.label} aria-controls={`public-mobile-group-${index}`} onClick={() => setMobileGroup(value => value === group.label ? null : group.label)}>{group.label}<ChevronDown /></Button>
+                {mobileGroup === group.label && <div className="sahl-nav-group-links" id={`public-mobile-group-${index}`}>
+                  {group.links.map(item => <NavLink key={item.to} to={item.to} onClick={() => setMobileOpen(false)}><item.icon />{item.label}<span>←</span></NavLink>)}
+                </div>}
+              </section>)}
+              <Link className="sahl-nav-standalone" to="/integrations" onClick={() => setMobileOpen(false)}>التكاملات<span>←</span></Link>
+              <Link className="sahl-nav-standalone" to="/pricing" onClick={() => setMobileOpen(false)}>الأسعار<span>←</span></Link>
+            </nav>
+            <footer className="sahl-nav-drawer-footer">
+              <Button asChild><Link to="/welcome" onClick={() => setMobileOpen(false)}>ابدأ الآن ←</Link></Button>
+              <Button asChild variant="outline"><Link to="/auth" search={{ mode:"signin" }} onClick={() => setMobileOpen(false)}>تسجيل الدخول</Link></Button>
+            </footer>
+          </DialogPrimitive.Content>
+        </DialogPrimitive.Portal>
+        </DialogPrimitive.Root>
+      </nav>
     </header>
   );
 }
