@@ -1604,7 +1604,7 @@
 .mono-employee-rail span,
 .mono-employee-rail strong,
 .mono-employee-rail small {
-  display: block;
+     display: flex;
   text-align: right;
 }
 .mono-employee-rail strong {
