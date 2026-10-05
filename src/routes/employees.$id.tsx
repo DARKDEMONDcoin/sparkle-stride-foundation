@@ -1,11 +1,12 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { ArrowLeft, Check, ShieldAlert } from "lucide-react";
+import { ArrowLeft, Check, ShieldAlert, Sparkles, Workflow, X } from "lucide-react";
 
 import { PageShell, CtaBand } from "@/components/site/PageShell";
 import { AppRow } from "@/components/site/AppIcon";
 import { Portrait } from "@/components/site/Portrait";
 import { Reveal } from "@/components/Reveal";
-import { team } from "@/data/team";
+import { getMember, team } from "@/data/team";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 
 export const Route = createFileRoute("/employees/$id")({
   loader: ({ params }) => {
@@ -54,7 +55,8 @@ function MemberNotFound() {
 
 function MemberPage() {
   const { id } = Route.useParams();
-  const m = team.find((x) => x.id === id)!;
+  const m = getMember(id);
+  if (!m) return null;
   const others = team.filter((x) => x.id !== id).slice(0, 3);
 
   return (
@@ -121,6 +123,61 @@ function MemberPage() {
         </div>
       </section>
 
+      <section className="sahl-member-section sahl-member-expertise">
+        <div className="sahl-member-shell">
+          <div className="sahl-member-section-head">
+            <span>خبرات {m.name}</span>
+            <h2>تخصص واضح، وليس مساعداً عاماً</h2>
+            <p>كل قدرة مرتبطة بعمل يومي يمكن طلبه ومراجعته وقياس نتيجته.</p>
+          </div>
+          <div className="sahl-expertise-grid">
+            {m.tasks.map((task, index) => (
+              <article key={task}>
+                <span>{String(index + 1).padStart(2, "0")}</span>
+                <m.icon />
+                <h3>{task}</h3>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="sahl-member-section is-soft">
+        <div className="sahl-member-shell">
+          <div className="sahl-member-section-head">
+            <span>طريقة العمل</span>
+            <h2>من طلبك إلى نتيجة جاهزة للمراجعة</h2>
+          </div>
+          <ol className="sahl-workflow-list">
+            {m.workflow.map((step, index) => (
+              <li key={step}>
+                <span>{String(index + 1).padStart(2, "0")}</span>
+                <Workflow />
+                <p>{step}</p>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </section>
+
+      <section className="sahl-member-section">
+        <div className="sahl-member-shell">
+          <div className="sahl-member-section-head">
+            <span>الفرق العملي</span>
+            <h2>قبل {m.name}، ومع {m.name}</h2>
+          </div>
+          <div className="sahl-member-compare">
+            <div className="sahl-member-compare-head"><span>الطريقة التقليدية</span><span>مع {m.name}</span></div>
+            {m.comparison.map((row) => (
+              <div className="sahl-member-compare-row" key={row.before}>
+                <span><X />{row.before}</span>
+                <span><Check />{row.withEmployee}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       <section className="mx-auto max-w-6xl px-5 py-12">
         <div className="grid gap-5 sm:grid-cols-3">
           {m.metrics.map((s) => (
@@ -131,6 +188,17 @@ function MemberPage() {
               </div>
             </Reveal>
           ))}
+        </div>
+      </section>
+
+      <section className="sahl-member-section is-soft">
+        <div className="sahl-member-shell sahl-member-integrations">
+          <div className="sahl-member-section-head">
+            <span>يعمل حيث تعمل</span>
+            <h2>تكاملات {m.name}</h2>
+            <p>اربط الأدوات التي تستخدمها بالفعل، وحدد الصلاحيات التي تناسبك.</p>
+          </div>
+          <AppRow apps={m.apps} />
         </div>
       </section>
 
@@ -206,6 +274,24 @@ function MemberPage() {
               </ul>
             </div>
           </Reveal>
+        </div>
+      </section>
+
+      <section className="sahl-member-section sahl-member-faq">
+        <div className="sahl-member-shell">
+          <div className="sahl-member-section-head">
+            <span>إجابات مباشرة</span>
+            <h2>أسئلة شائعة عن {m.name}</h2>
+          </div>
+          <Accordion type="single" collapsible className="sahl-member-accordion">
+            {m.faqs.map((faq, index) => (
+              <AccordionItem key={faq.question} value={`faq-${index}`}>
+                <AccordionTrigger>{faq.question}</AccordionTrigger>
+                <AccordionContent>{faq.answer}</AccordionContent>
+              </AccordionItem>
+            ))}
+          </Accordion>
+          <p className="sahl-member-trust"><Sparkles /> يتعلّم من ملاحظاتك، ولا يتجاوز صلاحياتك.</p>
         </div>
       </section>
 

@@ -14,19 +14,15 @@ import {
   X,
 } from "lucide-react";
 import { LogoMark } from "@/components/site/LogoMark";
+import { Portrait } from "@/components/site/Portrait";
 import { Button } from "@/components/ui/button";
+import { team } from "@/data/team";
 
 const groups = [
   {
     label: "المنتج",
     intro: "فريق رقمي يعمل كنظام واحد",
     links: [
-      {
-        label: "الموظفون",
-        desc: "تعرّف على فريق سهل وتخصصاته",
-        to: "/employees",
-        icon: MessageSquareText,
-      },
       {
         label: "المزايا",
         desc: "من الطلب إلى التنفيذ والمراجعة",
@@ -86,12 +82,14 @@ type MenuPath = (typeof groups)[number]["links"][number]["to"];
 /** رابط قائمة بتنقل فوري؛ صفحات حالات الاستخدام تمر عبر المسار الديناميكي. */
 function NavLink({ to, ...rest }: { to: MenuPath; role?: string; onClick?: () => void; children?: React.ReactNode }) {
   const m = to.match(/^\/use-cases\/(.+)$/);
-  if (m) return <Link to="/use-cases/$id" params={{ id: m[1]! }} {...rest} />;
+  const useCaseId = m?.[1];
+  if (useCaseId) return <Link to="/use-cases/$id" params={{ id: useCaseId }} {...rest} />;
   return <Link to={to as Exclude<MenuPath, `/use-cases/${string}`>} {...rest} />;
 }
 
 export function Nav({ variant = "over" }: { variant?: "over" | "solid" }) {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [mobileWorkersOpen, setMobileWorkersOpen] = useState(true);
   const [active, setActive] = useState<string | null>(null);
   const [scrolled, setScrolled] = useState(false);
   const [hidden, setHidden] = useState(false);
@@ -166,6 +164,50 @@ export function Nav({ variant = "over" }: { variant?: "over" | "solid" }) {
           <span>سهل</span>
         </Link>
         <div className="sahl-white-links">
+          <div onMouseEnter={() => setActive("الموظفون")}>
+            <Button
+              type="button"
+              variant="ghost"
+              aria-expanded={active === "الموظفون"}
+              aria-haspopup="menu"
+              onClick={() => setActive(active === "الموظفون" ? null : "الموظفون")}
+            >
+              الموظفون
+              <ChevronDown />
+            </Button>
+            {active === "الموظفون" && (
+              <div className="sahl-mega sahl-workers-mega" role="menu">
+                <div className="sahl-workers-heading">
+                  <span>
+                    <b>موظفو سهل</b>
+                    <small>ستة تخصصات تعمل معاً كفريق واحد</small>
+                  </span>
+                  <Link to="/employees" onClick={() => setActive(null)}>كل الفريق ←</Link>
+                </div>
+                <div className="sahl-workers-grid">
+                  {team.map((member) => (
+                    <Link
+                      key={member.id}
+                      to="/employees/$id"
+                      params={{ id: member.id }}
+                      role="menuitem"
+                      activeProps={{ className: "is-current" }}
+                      onClick={() => setActive(null)}
+                    >
+                      <span className="sahl-worker-avatar">
+                        <Portrait memberId={member.id} name={member.name} />
+                      </span>
+                      <span>
+                        <b>{member.name}</b>
+                        <small>{member.role}</small>
+                      </span>
+                      <i>←</i>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
           {groups.map((group) => (
             <div key={group.label} onMouseEnter={() => setActive(group.label)}>
               <Button
@@ -232,6 +274,39 @@ export function Nav({ variant = "over" }: { variant?: "over" | "solid" }) {
         createPortal(
         <div className="sahl-white-mobile">
           <div>
+            <section className="sahl-mobile-workers">
+              <Button
+                type="button"
+                variant="ghost"
+                aria-expanded={mobileWorkersOpen}
+                onClick={() => setMobileWorkersOpen((value) => !value)}
+              >
+                <b>الموظفون</b>
+                <ChevronDown />
+              </Button>
+              {mobileWorkersOpen && (
+                <div className="sahl-mobile-worker-list">
+                  {team.map((member) => (
+                    <Link
+                      key={member.id}
+                      to="/employees/$id"
+                      params={{ id: member.id }}
+                      activeProps={{ className: "is-current" }}
+                      onClick={() => setMobileOpen(false)}
+                    >
+                      <span className="sahl-worker-avatar">
+                        <Portrait memberId={member.id} name={member.name} />
+                      </span>
+                      <span><b>{member.name}</b><small>{member.role}</small></span>
+                      <span>←</span>
+                    </Link>
+                  ))}
+                  <Link to="/employees" onClick={() => setMobileOpen(false)}>
+                    تعرّف على الفريق كاملاً<span>←</span>
+                  </Link>
+                </div>
+              )}
+            </section>
             {groups.map((group) => (
               <section key={group.label}>
                 <b>{group.label}</b>
