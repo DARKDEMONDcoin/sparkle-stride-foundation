@@ -47754,3 +47754,81 @@ body:has(.chat-composer-dock) .liquid-glass-sahl.sahl-cookie-consent {
 .app-shell.is-embedded .design-studio{min-height:100dvh}
 @media(max-width:980px){.design-studio{grid-template-columns:minmax(15rem,18rem) minmax(0,1fr)}.design-studio-assets{grid-column:1/-1;display:grid;grid-template-columns:auto minmax(0,1fr) auto;min-height:auto;border-top:1px solid var(--border);border-inline-start:0}.design-studio-assets .mt-auto{grid-column:1/-1}.design-slide-list{display:flex;overflow:auto}}
 @media(max-width:700px){.design-studio{display:flex;min-height:100dvh;flex-direction:column}.design-studio-toolbar{position:sticky;top:0;z-index:20}.design-studio-stage{order:1;min-height:29rem;padding:.75rem}.design-canvas{max-height:26rem}.design-studio-panel{order:2;overflow:visible;border-top:1px solid var(--border);border-inline-end:0}.design-studio-assets{order:3;display:flex}.design-stage-meta{padding-inline:0}.design-copy h2{font-size:clamp(1.1rem,8vw,2rem)}.design-copy p{font-size:clamp(.58rem,3.2vw,.85rem)}}
+
+/* قائمة الموظفين العامة وصفحاتهم: مصدر واحد وتجربة واضحة على كل المقاسات. */
+.sahl-workers-mega { width: 560px; inset-inline-start: -42px; }
+.sahl-workers-heading { display:flex!important; align-items:center; justify-content:space-between; gap:1rem; padding:2px 10px 14px; border-bottom:1px solid var(--home-line); }
+.sahl-workers-heading span b,.sahl-workers-heading span small { display:block; }
+.sahl-workers-heading span b { font-size:.8rem; }
+.sahl-workers-heading span small { margin-top:.2rem; color:var(--home-copy); font-size:.65rem; }
+.sahl-workers-heading > a { min-height:auto; display:inline-flex; padding:0; color:var(--home-terracotta); font-size:.68rem; font-weight:800; }
+.sahl-workers-grid { grid-template-columns:repeat(2,minmax(0,1fr)); padding-top:8px; }
+.sahl-workers-grid a { grid-template-columns:42px minmax(0,1fr) auto; }
+.sahl-worker-avatar { width:40px; height:40px; overflow:hidden; border-radius:50%; background:var(--home-muted); }
+.sahl-worker-avatar img { width:100%; height:100%; object-fit:cover; object-position:top; }
+.sahl-workers-grid a.is-current,.sahl-mobile-worker-list a.is-current { background:var(--home-muted); box-shadow:inset 3px 0 var(--home-terracotta); }
+.sahl-mobile-workers > button { display:none; }
+
+.sahl-member-section { padding:88px 20px; background:var(--home-bg); color:var(--home-ink); }
+.sahl-member-section.is-soft { background:var(--home-soft); }
+.sahl-member-shell { width:min(1120px,100%); margin-inline:auto; }
+.sahl-member-section-head { max-width:720px; margin-bottom:42px; }
+.sahl-member-section-head > span { color:var(--home-terracotta); font-size:.76rem; font-weight:800; }
+.sahl-member-section-head h2 { margin-top:10px; font-family:"Almarai","IBM Plex Sans Arabic",sans-serif; font-size:clamp(2rem,4vw,3.5rem); line-height:1.18; }
+.sahl-member-section-head p { margin-top:15px; color:var(--home-copy); line-height:1.8; }
+.sahl-expertise-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); border-top:1px solid var(--home-line); border-inline-start:1px solid var(--home-line); }
+.sahl-expertise-grid article { min-height:190px; padding:24px; border-inline-end:1px solid var(--home-line); border-bottom:1px solid var(--home-line); }
+.sahl-expertise-grid article > span { color:var(--home-copy); font-size:.68rem; }
+.sahl-expertise-grid svg { display:block; width:24px; height:24px; margin-top:34px; color:var(--home-terracotta); }
+.sahl-expertise-grid h3 { margin-top:14px; font-size:1rem; line-height:1.65; }
+.sahl-workflow-list { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); padding:0; list-style:none; counter-reset:step; }
+.sahl-workflow-list li { position:relative; min-height:180px; padding:24px; border-top:1px solid var(--home-line); border-bottom:1px solid var(--home-line); border-inline-end:1px solid var(--home-line); }
+.sahl-workflow-list li:first-child { border-inline-start:1px solid var(--home-line); }
+.sahl-workflow-list li > span { color:var(--home-copy); font-size:.68rem; }
+.sahl-workflow-list svg { display:block; width:22px; margin-top:30px; color:var(--home-teal); }
+.sahl-workflow-list p { margin-top:12px; font-weight:700; line-height:1.65; }
+.sahl-member-compare { border:1px solid var(--home-line); border-radius:8px; overflow:hidden; }
+.sahl-member-compare-head,.sahl-member-compare-row { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); }
+.sahl-member-compare-head { background:var(--home-ink); color:var(--home-bg); font-size:.78rem; font-weight:800; }
+.sahl-member-compare-head span,.sahl-member-compare-row > span { padding:18px 22px; }
+.sahl-member-compare-head span + span,.sahl-member-compare-row > span + span { border-inline-start:1px solid var(--home-line); }
+.sahl-member-compare-row + .sahl-member-compare-row { border-top:1px solid var(--home-line); }
+.sahl-member-compare-row > span { display:flex; align-items:center; gap:10px; color:var(--home-copy); }
+.sahl-member-compare-row svg { width:17px; flex:0 0 auto; }
+.sahl-member-compare-row > span:first-child svg { color:var(--destructive); }
+.sahl-member-compare-row > span:last-child { color:var(--home-ink); font-weight:700; }
+.sahl-member-compare-row > span:last-child svg { color:var(--home-teal); }
+.sahl-member-integrations [class*="app"] { max-width:100%; }
+.sahl-member-accordion { max-width:820px; border-top:1px solid var(--home-line); }
+.sahl-member-accordion [data-state] { border-color:var(--home-line); }
+.sahl-member-accordion button { min-height:68px; font-size:1rem; font-weight:800; text-align:start; text-decoration:none!important; }
+.sahl-member-accordion [data-state="open"] button { color:var(--home-terracotta); }
+.sahl-member-accordion [data-radix-accordion-content] { color:var(--home-copy); line-height:1.85; }
+.sahl-member-trust { display:flex; align-items:center; gap:8px; margin-top:28px; color:var(--home-copy); font-size:.78rem; }
+.sahl-member-trust svg { width:16px; color:var(--home-gold); }
+
+@media(max-width:1024px){
+  .sahl-mobile-workers > button { width:100%; min-height:48px; display:flex; align-items:center; justify-content:space-between; padding:8px; color:var(--home-ink); }
+  .sahl-mobile-workers > button svg { width:18px; transition:transform .2s ease; }
+  .sahl-mobile-workers > button[aria-expanded="true"] svg { transform:rotate(180deg); }
+  .sahl-mobile-worker-list { margin-inline-start:10px; padding-inline-start:14px; border-inline-start:1px solid var(--home-line); }
+  .sahl-mobile-worker-list a { display:grid; grid-template-columns:38px minmax(0,1fr) auto; gap:10px; min-height:58px; padding:6px 8px; border-radius:7px; }
+  .sahl-mobile-worker-list a > span:nth-child(2) b,.sahl-mobile-worker-list a > span:nth-child(2) small { display:block; }
+  .sahl-mobile-worker-list a > span:nth-child(2) small { margin-top:2px; color:var(--home-copy); font-size:.66rem; }
+  .sahl-mobile-worker-list > a:last-child { display:flex; min-height:42px; color:var(--home-terracotta); font-weight:800; }
+}
+@media(max-width:720px){
+  .sahl-white-mobile > div { display:block; }
+  .sahl-white-mobile section { padding-block:6px; }
+  .sahl-white-mobile section:not(.sahl-mobile-workers) { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .sahl-white-mobile section:not(.sahl-mobile-workers) > b { grid-column:1/-1; }
+  .sahl-member-section { padding:62px 16px; }
+  .sahl-expertise-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .sahl-expertise-grid article { min-height:165px; padding:18px; }
+  .sahl-workflow-list { grid-template-columns:1fr; }
+  .sahl-workflow-list li { min-height:auto; display:grid; grid-template-columns:30px 24px 1fr; align-items:center; gap:10px; padding:18px; border-top:0; border-inline-start:1px solid var(--home-line); }
+  .sahl-workflow-list li:first-child { border-top:1px solid var(--home-line); }
+  .sahl-workflow-list svg,.sahl-workflow-list p { margin-top:0; }
+  .sahl-member-compare-head span,.sahl-member-compare-row > span { padding:14px 12px; font-size:.78rem; }
+}
+@media(prefers-reduced-motion:reduce){.sahl-workers-mega,.sahl-white-mobile{animation:none}.sahl-white-links svg,.sahl-mobile-workers svg{transition:none}}
