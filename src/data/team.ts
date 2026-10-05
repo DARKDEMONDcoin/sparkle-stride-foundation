@@ -10,6 +10,7 @@ import {
 import { employeeGuides, type EmployeeGuide } from "./employee-guides";
 
 export type TeamMember = {
+  /** Stable internal ID (sonny=سِراج, eva=أمَل, sam=سالم, nour, dana, adam). Never rename — stored in data and links. */
   id: string;
   name: string;
   latin: string;
