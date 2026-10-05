@@ -43,4 +43,4 @@
 - Chat media from users, employees, and generators uses `ChatAttachments` for consistent responsive sizing and fullscreen viewing.
 - AccountMenu owns presentation and scoped styles; AppShell owns auth/data so account rules stay unchanged.
 - Settings use router search state so links and browser history show the requested section.
-- Public employee navigation and pages share `src/data/team.ts` as their content source to prevent drift.
+- Public employee pages use team.ts with employee-guides.ts and shared skills for consistent, grounded content.
