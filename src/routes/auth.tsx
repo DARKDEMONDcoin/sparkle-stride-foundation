@@ -10,6 +10,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { signIn } from "@/lib/auth";
 import { GUEST_EMAIL } from "@/lib/guest.functions";
 import { createAccount } from "@/lib/signup.functions";
+import { SITE_ORIGIN } from "@/lib/site-origin";
 import { cn } from "@/lib/utils";
 
 const searchSchema = z.object({
@@ -269,8 +270,9 @@ function AuthPage() {
     setFormError("");
     setGoogleBusy(true);
     try {
-      // External Supabase provider: return publicly before entering the guarded workspace.
-      const callback = new URL("/auth", window.location.origin);
+      // Always return to the public site. Preview/local origins are not reachable from
+      // a user's phone after Google completes the external OAuth round trip.
+      const callback = new URL("/auth", SITE_ORIGIN);
       callback.searchParams.set("mode", mode);
       callback.searchParams.set("oauth", mode);
       if (search.invite) callback.searchParams.set("invite", search.invite);
