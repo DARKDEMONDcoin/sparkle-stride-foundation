@@ -44,4 +44,4 @@
 - AccountMenu owns presentation and scoped styles; AppShell owns auth/data so account rules stay unchanged.
 - Settings use router search state so links and browser history show the requested section.
 - Public employee pages use team.ts with employee-guides.ts and shared skills for consistent, grounded content.
-- Employee IDs (sonny=Siraj, eva=Amal, sam=Salem, nour, dana, adam) are permanent internal keys distinct from display names; never rename them. Why: they are stored in DB rows, constraints, URLs and Telegram commands.
+- Employee IDs (sonny/eva/sam=Siraj/Amal/Salem) are permanent keys; never rename. Why: stored in DB, URLs, Telegram.
