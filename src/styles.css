@@ -46203,6 +46203,15 @@ html {
   .app-tools-menu { animation: none; }
 }
 
+/* Employee media stays on the avatar side of the RTL transcript. */
+.chat-assistant-media > div {
+  margin-left: 0;
+  margin-right: auto;
+}
+.chat-assistant-media > div > div {
+  max-width: 100%;
+}
+
 /* محادثة الهاتف: كل رد وبطاقة يبقيان داخل الشاشة، دون قص أفقي. */
 @media (max-width: 640px) {
   .chat-message-column {
