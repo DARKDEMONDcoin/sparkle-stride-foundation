@@ -31,7 +31,7 @@ import {
   Globe,
   Palette,
   MailWarning,
-  Settings2,
+
   MessageCircle,
   Search,
 } from "lucide-react";
