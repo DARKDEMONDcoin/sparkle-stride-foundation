@@ -1278,6 +1278,34 @@ function ChatView({
               <PlugZap className="size-4" /><span>التكاملات</span>
             </Button>
           </div>
+        </div>
+      </ChatShellActions>
+      <div className="chat-command-layout">
+        <div
+          className={cn(
+            "chat-stage relative flex min-h-[calc(100dvh-4rem)] min-w-0 flex-col",
+            ((messages ?? []).length > 0 || pending) && "is-engaged",
+          )}
+          style={
+            {
+              "--chat-accent": member.tint,
+              "--chat-accent-soft": member.tintSoft,
+            } as React.CSSProperties
+          }
+        >
+          <div className="chat-smoke" aria-hidden="true">
+            <i />
+            <i />
+            <i />
+            <b />
+            <b />
+            <b />
+            <span />
+            <span />
+            <span />
+            <span />
+            <span />
+          </div>
           <div
             ref={columnRef}
             onScroll={onColumnScroll}
