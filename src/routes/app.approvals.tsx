@@ -35,6 +35,20 @@ export const Route = createFileRoute("/app/approvals")({
   component: ApprovalsPage,
 });
 
+/** ينسّق موعد النشر بصيغة عربية مقروءة مهما كانت الصيغة المخزّنة (ISO أو نص جاهز). */
+function formatScheduled(raw: string | null | undefined): string {
+  if (!raw) return "";
+  const trimmed = raw.trim();
+  if (!trimmed) return "";
+  const date = new Date(trimmed);
+  if (Number.isNaN(date.getTime())) return trimmed;
+  try {
+    return new Intl.DateTimeFormat("ar", { dateStyle: "full", timeStyle: "short" }).format(date);
+  } catch {
+    return trimmed;
+  }
+}
+
 /** يستخرج درجة مراجعة الجودة المخزّنة ضمن خطوات المهمة (مثال: «مراجعة الجودة — 88/100»). */
 function qualityScoreOf(steps: unknown): number | null {
   if (!Array.isArray(steps)) return null;
