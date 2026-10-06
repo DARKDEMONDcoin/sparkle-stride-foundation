@@ -2,6 +2,8 @@ import { Link } from "@tanstack/react-router";
 import { ArrowLeft, Bot, CalendarClock, Clock3, Gavel, Lightbulb, ListChecks, Send, Workflow, CheckCircle2, Inbox, Loader2, MessageCircle, Sparkles, Users } from "lucide-react";
 
 import { Portrait } from "@/components/site/Portrait";
+import { Button } from "@/components/ui/button";
+import { workspaceFollowUp } from "@/lib/workspace-model";
 import { PersonAvatar } from "@/components/app/PersonAvatar";
 import { getMember, team } from "@/data/team";
 import type { Tables } from "@/integrations/supabase/types";
@@ -27,41 +29,38 @@ export function WorkspaceToday({ tasks, projects, people, meId, ownWorkspaceId, 
   const pendingApprovals = isOwnSpace ? splitReview((approvals ?? []).filter((t) => t.status === "review")).live : [];
   const today = new Date().toISOString().slice(0, 10);
   const soon = new Date(Date.now() + 2 * 86400_000).toISOString().slice(0, 10);
-  const open = tasks.filter((t) => t.status !== "done");
-  const aiReady = open.filter((t) => t.ai_employee_id && t.ai_status === "done");
-  const aiFailed = open.filter((t) => t.ai_employee_id && t.ai_status === "failed");
-  const aiRunning = open.filter((t) => t.ai_status === "running");
-  const myDue = open.filter((t) => t.assignee_id === meId && t.due_date && t.due_date <= soon);
+  const { open, ready: aiReady, failed: aiFailed, running: aiRunning, upcoming: myDue } = workspaceFollowUp(tasks, meId, soon);
   const weekAgo = Date.now() - 7 * 86400_000;
   const doneWeek = tasks.filter((t) => t.status === "done" && new Date(t.updated_at).getTime() > weekAgo).length;
   const projectName = (id: string) => projects.find((p) => p.id === id)?.name ?? "";
-  const waitingCount = pendingApprovals.length + aiReady.length + aiFailed.length + myDue.length;
+  const waitingCount = pendingApprovals.length + aiReady.length;
 
   const row = (t: WorkItem, note: string, tone?: "late" | "fail") => (
     <li key={t.id}>
-      <button type="button" onClick={() => onOpenProject(t.project_id)} className="flex w-full items-center gap-3 py-3 text-start hover:text-primary">
+      <Button variant="ghost" type="button" onClick={() => onOpenProject(t.project_id)} className="h-auto w-full items-start justify-start gap-3 px-0 py-3 text-start whitespace-normal hover:text-primary">
         {t.ai_employee_id ? <EmployeeDot id={t.ai_employee_id} /> : <CalendarClock className="size-4 shrink-0 text-muted-foreground" />}
         <span className="min-w-0 flex-1">
           <span className="block break-words text-sm font-bold">{t.title}</span>
           <span className="text-xs text-muted-foreground">{projectName(t.project_id)}</span>
         </span>
-        <span className={cn("shrink-0 text-xs font-bold", tone === "late" || tone === "fail" ? "text-destructive" : "text-primary")}>{note}</span>
-      </button>
+        <span className={cn("max-w-32 text-xs font-bold", tone === "late" || tone === "fail" ? "text-destructive" : "text-primary")}>{note}</span>
+      </Button>
     </li>
   );
 
   return (
     <section className="mt-7 space-y-6" aria-label="النهاردة">
-      <div className="grid gap-3 sm:grid-cols-3">
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
         <Stat icon={Inbox} label="مستني قرارك" value={waitingCount} urgent={waitingCount > 0} />
-        <Stat icon={Loader2} label="موظفون يعملون الآن" value={aiRunning.length} />
+        <Stat icon={Loader2} label="جارٍ التنفيذ" value={aiRunning.length} />
+        <Stat icon={CalendarClock} label="قادم ومتأخر" value={myDue.length} />
         <Stat icon={CheckCircle2} label="أُنجز هذا الأسبوع" value={doneWeek} />
       </div>
 
-      <div className="rounded-md border border-border p-5">
-        <h3 className="flex items-center gap-2 font-display text-lg font-black"><Inbox className="size-5 text-primary" /> مستني منك</h3>
+      <div className="border-b border-border py-5">
+        <h3 className="flex items-center gap-2 font-display text-lg font-black"><Inbox className="size-5 text-primary" /> يحتاج قرارك</h3>
         {waitingCount === 0 ? (
-          <p className="py-8 text-center text-sm text-muted-foreground">لا شيء ينتظرك الآن. اطلب عملاً جديداً من أي موظف 👇</p>
+          <p className="py-8 text-center text-sm text-muted-foreground">لا توجد أعمال تنتظر مراجعتك.</p>
         ) : (
           <ul className="mt-2 divide-y divide-border">
             {pendingApprovals.length > 0 && (
@@ -74,32 +73,21 @@ export function WorkspaceToday({ tasks, projects, people, meId, ownWorkspaceId, 
               </li>
             )}
             {aiReady.map((t) => row(t, `جاهز من ${getMember(t.ai_employee_id ?? "")?.name ?? "الموظف"} — راجعه`))}
-            {aiFailed.map((t) => row(t, "تعثّر — أعد المحاولة", "fail"))}
-            {myDue.map((t) => row(t, t.due_date! < today ? "متأخرة" : t.due_date === today ? "اليوم" : "قريباً", t.due_date! < today ? "late" : undefined))}
           </ul>
         )}
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-2">
-        <div className="rounded-md border border-border p-5">
-          <h3 className="flex items-center gap-2 font-display text-lg font-black"><Sparkles className="size-5 text-primary" /> فريقك الرقمي</h3>
-          <ul className="mt-3 divide-y divide-border">
-            {team.map((m) => {
-              const mineRunning = aiRunning.filter((t) => t.ai_employee_id === m.id);
-              return (
-                <li key={m.id} className="flex items-center gap-3 py-2.5">
-                  <EmployeeDot id={m.id} />
-                  <span className="min-w-0 flex-1">
-                    <span className="block text-sm font-bold">{m.name} <span className="font-normal text-muted-foreground">· {m.role}</span></span>
-                    <span className="block truncate text-xs text-muted-foreground">{mineRunning.length ? `يعمل على: ${mineRunning[0]?.title}` : "متاح"}</span>
-                  </span>
-                  <Link to="/app/chat/$id" params={{ id: m.id }} aria-label={`تحدث مع ${m.name}`} className="grid size-8 place-items-center rounded-md text-primary hover:bg-secondary"><MessageCircle className="size-4" /></Link>
-                </li>
-              );
-            })}
-          </ul>
-        </div>
-        <div className="rounded-md border border-border p-5">
+      <section className="border-b border-border py-5" aria-label="جارٍ التنفيذ">
+        <h3 className="flex items-center gap-2 font-display text-lg font-black"><Loader2 className="size-5 text-primary" /> جارٍ التنفيذ</h3>
+        {aiRunning.length ? <ul className="mt-2 divide-y divide-border">{aiRunning.map((t) => row(t, "يعمل الآن"))}</ul> : <p className="py-6 text-sm text-muted-foreground">لا توجد مهام قيد التنفيذ الآن.</p>}
+      </section>
+      {aiFailed.length > 0 && <section className="border-b border-border py-5" aria-label="تعذّر التنفيذ"><h3 className="font-display text-lg font-black text-destructive">تعذّر التنفيذ</h3><ul className="mt-2 divide-y divide-border">{aiFailed.map((t) => row(t, "راجع السبب وأعد المحاولة", "fail"))}</ul></section>}
+      <section className="border-b border-border py-5" aria-label="المواعيد القادمة">
+        <h3 className="flex items-center gap-2 font-display text-lg font-black"><CalendarClock className="size-5 text-primary" /> مواعيدك القادمة والمتأخرة</h3>
+        {myDue.length ? <ul className="mt-2 divide-y divide-border">{myDue.map((t) => row(t, (t.due_date ?? "") < today ? "متأخرة" : t.due_date === today ? "اليوم" : "قريباً", (t.due_date ?? "") < today ? "late" : undefined))}</ul> : <p className="py-6 text-sm text-muted-foreground">لا مواعيد مستحقة خلال اليومين القادمين.</p>}
+      </section>
+      <div>
+        <div className="border-b border-border py-5">
           <h3 className="flex items-center gap-2 font-display text-lg font-black"><Users className="size-5 text-primary" /> فريقك البشري</h3>
           {people.length <= 1 ? (
             <p className="py-8 text-center text-sm text-muted-foreground">أنت وحدك هنا الآن. ادعُ زميلاً من زر «دعوة شخص» لتتشاركوا المشاريع.</p>
@@ -122,8 +110,8 @@ export function WorkspaceToday({ tasks, projects, people, meId, ownWorkspaceId, 
         </div>
       </div>
 
-      <div className="rounded-md border border-border p-5">
-        <h3 className="font-display text-lg font-black">كل أدوات المتابعة</h3>
+      {isOwnSpace && <div className="border-b border-border py-5">
+        <h3 className="font-display text-lg font-black">أدوات مساحتك الشخصية</h3>
         <p className="mt-1 text-xs text-muted-foreground">كل ما يخص شغل فريقك في مكان واحد.</p>
         <div className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-4">
           {([
@@ -141,7 +129,7 @@ export function WorkspaceToday({ tasks, projects, people, meId, ownWorkspaceId, 
             </Link>
           ))}
         </div>
-      </div>
+      </div>}
     </section>
   );
 }
