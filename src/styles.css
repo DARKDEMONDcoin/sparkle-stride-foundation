@@ -47881,7 +47881,9 @@ body:has(.chat-composer-dock) .liquid-glass-sahl.sahl-cookie-consent {
 
 /* Unified app header: on desktop the bell and profile picture always sit at the far end, same as every other app page. */
 @media (min-width: 768px) {
-  .is-chat-shell .app-topbar-inner {
+  .app-shell.is-chat-shell header.app-topbar .app-topbar-inner {
+    border-radius: 0 !important;
+    padding-inline: 0.5rem !important;
     display: flex !important;
     width: 100% !important;
     max-width: none !important;
@@ -47892,8 +47894,8 @@ body:has(.chat-composer-dock) .liquid-glass-sahl.sahl-cookie-consent {
     -webkit-backdrop-filter: none !important;
     backdrop-filter: none !important;
   }
-  .is-chat-shell .app-topbar-controls { flex: 1 1 auto !important; width: 100% !important; }
-  .is-chat-shell .app-topbar-controls .chat-topbar-actions {
+  .app-shell.is-chat-shell header.app-topbar .app-topbar-controls { flex: 1 1 auto !important; width: 100% !important; }
+  .app-shell.is-chat-shell header.app-topbar .app-topbar-controls .chat-topbar-actions {
     flex: 0 1 auto !important;
     width: auto !important;
     margin-inline: auto;
