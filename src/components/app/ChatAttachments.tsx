@@ -121,7 +121,7 @@ export function ChatAttachments({
   const single = media.length === 1 && !compact;
 
   return (
-    <div className={cn("space-y-2", className)}>
+    <div className={cn("min-w-0 max-w-full space-y-2", className)}>
       {media.length ? (
         <div
           className={cn(
@@ -138,7 +138,7 @@ export function ChatAttachments({
               key={a.url}
               className={cn(
                 "group relative overflow-hidden rounded-xl border border-border/60 bg-muted",
-                compact ? "size-16" : single ? (a.type === "video" ? "aspect-video w-[min(20rem,78vw)]" : "w-fit max-w-[min(20rem,78vw)]") : "aspect-square",
+                compact ? "size-16" : single ? (a.type === "video" ? "aspect-video w-[min(20rem,78vw)] max-w-full" : "w-fit max-w-full") : "aspect-square min-w-0",
               )}
             >
               <Button
@@ -162,7 +162,7 @@ export function ChatAttachments({
                     onError={() => markFailed(a.url)}
                     className={cn(
                       "transition-transform duration-300 group-hover:scale-[1.02]",
-                      compact || !single ? "size-full object-cover" : "h-auto max-h-[22rem] w-auto max-w-full object-contain",
+                      compact || !single ? "size-full object-cover" : "h-auto max-h-[22rem] w-auto max-w-[min(20rem,100%)] object-contain",
                     )}
                   />
                 ) : (

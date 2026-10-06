@@ -1403,7 +1403,7 @@ function ChatView({
                         {parsedUser?.items.length ? (
                           <ChatAttachments items={parsedUser.items} className="mb-2" />
                         ) : null}
-                         {parsedAssistant?.items.length ? <ChatAttachments items={parsedAssistant.items} className="mb-2" /> : null}
+                         {parsedAssistant?.items.length ? <ChatAttachments items={parsedAssistant.items} className="chat-assistant-media mb-2" /> : null}
                         <MessageContent
                         className={cn(
                            "chat-message-content min-w-0 px-3 py-2 text-[0.82rem] leading-6",

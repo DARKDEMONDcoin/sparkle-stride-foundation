@@ -40,7 +40,7 @@
 - Project spaces get a team block (members + sender) in employee turns; stream passes verified client+sender. Why: chats address the team.
 - Referral earnings require verified payments and refund maturity; users cannot write them.
 - Feedback/support records are private behind RLS.
-- Chat media from users, employees, and generators uses `ChatAttachments` for consistent responsive sizing and fullscreen viewing.
+- Chat media uses `ChatAttachments` with bounded sizing, fullscreen viewing and avatar-side assistant alignment. Why: preserve sender attribution.
 - AccountMenu owns UI; AppShell owns auth/data. Account entry points only; uniform stays in settings to avoid duplicates.
 - Settings use router search state for links/history.
 - Employee IDs (sonny/eva/sam=Siraj/Amal/Salem) are permanent; never rename (stored in DB, URLs).
