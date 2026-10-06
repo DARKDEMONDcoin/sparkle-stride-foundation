@@ -41,7 +41,7 @@ export function ApprovalPreview({
   if (category === "design") {
     return (
       <div className="space-y-4">
-        <div className="grid place-items-center rounded-2xl border border-border bg-[repeating-conic-gradient(var(--secondary)_0%_25%,var(--background)_0%_50%)] bg-[length:24px_24px] p-4">
+        <div className="grid place-items-center rounded-2xl border border-border bg-secondary/40 p-4">
           {images.length ? (
             <div className="grid w-full gap-3 sm:grid-cols-2">
               {images.map((img) => (
