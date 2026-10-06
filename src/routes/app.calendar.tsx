@@ -441,12 +441,8 @@ function CalendarPage() {
   );
   const siraj = getMember("sonny");
 
-  return (
-    <AppShell
-      title={lens?.title ?? "تقويم الفريق"}
-      lead={lens?.lead ?? "كل ما يُنشر للجمهور، وكل مواعيدك وأعمالك — كلٌّ حسب موظفه"}
-      actions={
-        lens?.view === "meetings" || employee === "nour" ? undefined : <div className="flex flex-wrap items-center gap-2">
+  const calendarActions =
+    lens?.view === "meetings" || employee === "nour" ? undefined : <div className="flex flex-wrap items-center gap-2">
           <button
             onClick={() => learnMutation.mutate()}
             disabled={!workspace || learnMutation.isPending}
@@ -467,10 +463,17 @@ function CalendarPage() {
           >
             <Sparkles className="size-4" /> خطّط لي المحتوى
           </button>
-        </div>
-      }
+        </div>;
+
+  return (
+    <AppShell
+      title={lens?.title ?? "تقويم الفريق"}
+      lead={lens?.lead ?? "كل ما يُنشر للجمهور، وكل مواعيدك وأعمالك — كلٌّ حسب موظفه"}
+      hideTitle={Boolean(employee)}
+      compactTitle={Boolean(employee)}
+      actions={employee ? <EmployeeTopbar memberId={employee} active="calendar" /> : calendarActions}
     >
-      {employee ? <EmployeeTopbar memberId={employee} active="calendar" /> : null}
+      {employee && calendarActions ? <div className="mb-4 flex justify-end">{calendarActions}</div> : null}
       {error ? (
         <div className="mb-4 flex items-start justify-between gap-3 rounded-2xl bg-destructive/10 p-4 text-sm font-bold text-destructive">
           <span>

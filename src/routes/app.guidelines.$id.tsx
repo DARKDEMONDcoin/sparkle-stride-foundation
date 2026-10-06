@@ -32,8 +32,7 @@ function EmployeeGuidelinesPage() {
   if (!member) return null;
 
   return (
-    <AppShell title={`تعليمات ${member.name}`} lead={`التفضيلات المتخصصة التي يطبقها ${member.name} تلقائياً في كل طلب مناسب.`}>
-      <EmployeeTopbar memberId={member.id} active="guidelines" />
+    <AppShell title={`تعليمات ${member.name}`} lead={`التفضيلات المتخصصة التي يطبقها ${member.name} تلقائياً في كل طلب مناسب.`} hideTitle compactTitle actions={<EmployeeTopbar memberId={member.id} active="guidelines" />}>
       <main className="mx-auto w-full max-w-3xl" dir="rtl">
         <section className="border-t border-border pt-5">
           <EmployeeGuidelines {...(workspace?.id ? { workspaceId: workspace.id } : {})} employeeId={member.id} employeeName={member.name} />
