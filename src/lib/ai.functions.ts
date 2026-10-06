@@ -1976,6 +1976,7 @@ export const runSkill = createServerFn({ method: "POST" })
       skillId: data.skillId,
       values: data.values,
       conversationId: data.conversationId,
+      saveToTasks: false,
     });
     return { output: run.output, messageId: run.messageId, taskId: run.taskId };
   });

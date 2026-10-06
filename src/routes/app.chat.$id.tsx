@@ -62,7 +62,7 @@ import { ChatAttachments, splitMessageMedia, splitUserBody } from "@/components/
 import { PostCards } from "@/components/app/PostCards";
 import { OutputActions } from "@/components/app/OutputActions";
 import { SaveChatOutputs } from "@/components/app/SaveChatOutputs";
-import { readChatOutputs } from "@/lib/chat-outputs";
+import { composeChatOutputs, readChatOutputs } from "@/lib/chat-outputs";
 import { requestedPublishTargets } from "@/lib/platforms";
 import { askedForPublishableOutput, extractPostText, isNonPostReply } from "@/lib/post-format";
 import { detectHandoff } from "@/lib/handoff";
@@ -1338,7 +1338,17 @@ function ChatView({
               const prev = arr[idx - 1];
               const newDay = !prev || dayLabel(prev.created_at) !== dayLabel(m.created_at);
               const isUser = m.role === "user";
-              const body = isUser ? m.body : prettyBody(m.body);
+              // Recover older multi-output turns from their existing tasks too.
+              const legacyOutputs = !isUser && !readChatOutputs(m.outputs).length && m.body.includes("(/app/tasks)")
+                ? (tasks ?? []).filter((task) => task.employee_id === id &&
+                    (task.id === m.task_id || (task.detail === m.body.slice(0, 400) &&
+                      Math.abs(new Date(task.created_at).getTime() - new Date(m.created_at).getTime()) < 120_000)))
+                    .map((task) => ({ title: task.title, body: task.output ?? "" }))
+                : [];
+              const body = isUser ? m.body : prettyBody(composeChatOutputs(
+                legacyOutputs.length ? m.body.replace(/📋[^\n]*\[المخرجات والمهام\]\(\/app\/tasks\)\.?/g, "").trim() : m.body,
+                legacyOutputs,
+              ));
               const parsedUser = isUser ? splitUserBody(m.body) : null;
                const parsedAssistant = !isUser ? splitMessageMedia(body) : null;
               const sender = isUser && m.sender_id ? humanTeam?.members.find((person) => person.userId === m.sender_id) : null;
