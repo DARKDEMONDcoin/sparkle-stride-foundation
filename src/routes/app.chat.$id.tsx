@@ -61,6 +61,8 @@ import { Markdown } from "@/components/app/Markdown";
 import { ChatAttachments, splitMessageMedia, splitUserBody } from "@/components/app/ChatAttachments";
 import { PostCards } from "@/components/app/PostCards";
 import { OutputActions } from "@/components/app/OutputActions";
+import { SaveChatOutputs } from "@/components/app/SaveChatOutputs";
+import { readChatOutputs } from "@/lib/chat-outputs";
 import { requestedPublishTargets } from "@/lib/platforms";
 import { askedForPublishableOutput, extractPostText, isNonPostReply } from "@/lib/post-format";
 import { detectHandoff } from "@/lib/handoff";
@@ -1470,6 +1472,9 @@ function ChatView({
 
                         {!isUser ? (
                           <div className="chat-reply-approval">
+                            {!m.task_id && !busy && readChatOutputs(m.outputs).length ? (
+                              <SaveChatOutputs messageId={m.id} count={readChatOutputs(m.outputs).length} />
+                            ) : null}
                             {(() => {
                               const linkedIds = approvalTasksForMessage(m.body, m.created_at, m.task_id).map(
                                 (task) => task.id,
