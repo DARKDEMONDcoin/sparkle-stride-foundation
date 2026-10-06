@@ -47881,22 +47881,28 @@ body:has(.chat-composer-dock) .liquid-glass-sahl.sahl-cookie-consent {
 
 /* Unified app header: on desktop the bell and profile picture always sit at the far end, same as every other app page. */
 @media (min-width: 768px) {
-  .is-chat-shell .app-topbar-controls {
-    flex: 1 1 auto !important;
+  .app-shell.is-chat-shell header.app-topbar .app-topbar-inner {
+    border-radius: 0 !important;
+    padding-inline: 0.5rem !important;
+    display: flex !important;
     width: 100% !important;
     max-width: none !important;
-    justify-content: flex-start !important;
+    margin: 0 !important;
     background: transparent !important;
     border: 0 !important;
     box-shadow: none !important;
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
   }
-  .is-chat-shell .app-topbar-controls > .contents > .chat-topbar-actions,
-  .is-chat-shell .app-topbar-controls .chat-topbar-actions {
+  .app-shell.is-chat-shell header.app-topbar .app-topbar-controls { flex: 1 1 auto !important; width: 100% !important; }
+  .app-shell.is-chat-shell header.app-topbar .app-topbar-controls .chat-topbar-actions {
     flex: 0 1 auto !important;
     width: auto !important;
-  }
-  .is-chat-shell .app-topbar-controls > :has(> button[aria-label="حسابك"]),
-  .is-chat-shell .app-topbar-controls > :nth-last-child(2) {
-    margin-inline-start: auto;
+    margin-inline: auto;
+    padding: 0.25rem 0.5rem;
+    border: 1px solid var(--border);
+    border-radius: 1rem;
+    background: color-mix(in oklab, var(--card) 92%, transparent);
+    box-shadow: 0 12px 32px -24px var(--foreground);
   }
 }
