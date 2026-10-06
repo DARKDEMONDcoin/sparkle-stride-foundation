@@ -31,7 +31,7 @@ function SpaceIcon({ space, className }: { space?: Pick<Space, "name" | "logo" |
   );
 }
 
-/** مبدّل المساحات: المساحة الشخصية + كل مشروع كمساحة مستقلة بفريقه وموظفيه. */
+/** Switch workspaces; collaboration projects live inside each workspace. */
 export function SpaceSwitcher({ collapsed = false }: { collapsed?: boolean }) {
   const { data: spaces } = useChatSpaces();
   const { data: active } = useChatWorkspace();
@@ -50,66 +50,66 @@ export function SpaceSwitcher({ collapsed = false }: { collapsed?: boolean }) {
     setChatSpace(id);
     setOpen(false);
     void qc.invalidateQueries();
-    void navigate({ to: "/app" });
+    void navigate({ to: "/app/workspace", search: { workspaceId: id, view: "today", projectId: undefined } });
   };
 
   return (
     <>
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
-          <button type="button" aria-label="تبديل المساحة" title={collapsed ? current?.name : undefined}
-            className={cn("flex w-full items-center gap-2.5 rounded-lg border border-border bg-card p-2 text-start transition hover:bg-accent", collapsed && "justify-center p-1")}>
+          <Button variant="ghost" type="button" aria-label="تبديل المساحة" title={collapsed ? current?.name : undefined}
+            className={cn("h-auto justify-start whitespace-normal flex w-full items-center gap-2.5 rounded-lg border border-border bg-card p-2 text-start transition hover:bg-accent", collapsed && "justify-center p-1")}>
             {current?.kind !== "personal" ? <SpaceIcon space={current} /> : null}
             {!collapsed && (
               <>
                 <span className="min-w-0 flex-1">
                   <span className="block truncate text-sm font-bold">{current?.name ?? "مساحتي"}</span>
-                  <span className="block truncate text-[0.7rem] text-muted-foreground">{current?.kind === "personal" ? "مساحتي الشخصية" : current?.owned ? "مشروع — أنت المالك" : "مشروع — عضو"}</span>
+                  <span className="block truncate text-[0.7rem] text-muted-foreground">{current?.kind === "personal" ? "مساحتي الشخصية" : current?.owned ? "مساحة فريق — أنت المالك" : "مساحة فريق — عضو"}</span>
                 </span>
                 <ChevronsUpDown className="size-4 shrink-0 text-muted-foreground" />
               </>
             )}
-          </button>
+          </Button>
         </PopoverTrigger>
         <PopoverContent align="start" className="w-72 p-2">
-          <p className="px-2 pb-1 text-[0.7rem] font-bold text-muted-foreground">مساحاتك ومشاريعك</p>
+          <p className="px-2 pb-1 text-[0.7rem] font-bold text-muted-foreground">مساحات العمل</p>
           <div className="max-h-72 space-y-1 overflow-y-auto">
             {list.map((s) => (
-              <button key={s.id} type="button" onClick={() => switchTo(s.id)}
-                className={cn("flex w-full items-center gap-2.5 rounded-md p-2 text-start text-sm hover:bg-accent", s.id === current?.id && "bg-accent")}>
+              <Button variant="ghost" key={s.id} type="button" onClick={() => switchTo(s.id)}
+                className={cn("h-auto justify-start whitespace-normal flex w-full items-center gap-2.5 rounded-md p-2 text-start text-sm hover:bg-accent", s.id === current?.id && "bg-accent")}>
                 {s.kind !== "personal" ? <SpaceIcon space={s} className="size-8" /> : null}
                 <span className="min-w-0 flex-1">
                   <span className="block truncate font-bold">{s.name}</span>
                   <span className="flex items-center gap-1 text-[0.7rem] text-muted-foreground">
-                    {s.kind === "personal" ? "مساحة العمل الشخصية" : <><Users className="size-3" /> {s.owned ? "مشروعي" : "مشروع فريق"}</>}
+                    {s.kind === "personal" ? "مساحة العمل الشخصية" : <><Users className="size-3" /> {s.owned ? "مساحة أملكها" : "مساحة فريق"}</>}
                   </span>
                 </span>
                 {s.id === current?.id && <Check className="size-4 text-primary" />}
-              </button>
+              </Button>
             ))}
           </div>
           {archivedList.length > 0 && (
             <div className="mt-1 border-t border-border pt-1">
-              <button type="button" onClick={() => setShowArchived((v) => !v)} className="flex w-full items-center gap-1.5 px-2 py-1 text-[0.7rem] font-bold text-muted-foreground hover:text-foreground">
-                <Archive className="size-3" /> المشاريع المؤرشفة ({archivedList.length})
-              </button>
+              <Button variant="ghost" type="button" onClick={() => setShowArchived((v) => !v)} className="flex w-full items-center gap-1.5 px-2 py-1 text-[0.7rem] font-bold text-muted-foreground hover:text-foreground">
+                <Archive className="size-3" /> المساحات المؤرشفة ({archivedList.length})
+              </Button>
               {showArchived && archivedList.map((s) => (
-                <button key={s.id} type="button" onClick={() => switchTo(s.id)}
-                  className={cn("flex w-full items-center gap-2.5 rounded-md p-2 text-start text-sm opacity-70 hover:bg-accent hover:opacity-100", s.id === current?.id && "bg-accent")}>
+                <Button variant="ghost" key={s.id} type="button" onClick={() => switchTo(s.id)}
+                  className={cn("h-auto justify-start whitespace-normal flex w-full items-center gap-2.5 rounded-md p-2 text-start text-sm opacity-70 hover:bg-accent hover:opacity-100", s.id === current?.id && "bg-accent")}>
                   <SpaceIcon space={s} className="size-8 grayscale" />
                   <span className="min-w-0 flex-1 truncate font-bold">{s.name}</span>
                   <span className="text-[0.65rem] text-muted-foreground">مؤرشف</span>
-                </button>
+                </Button>
               ))}
             </div>
           )}
           {current?.kind === "project" && current.owned && (
             <Button type="button" variant="ghost" className="mt-2 w-full gap-2" onClick={() => { setOpen(false); setEditing(true); }}>
-              <Pencil className="size-4" /> إعدادات المشروع
+              <Pencil className="size-4" /> إعدادات المساحة
             </Button>
           )}
           <Button type="button" variant="outline" className="mt-2 w-full gap-2" onClick={() => { setOpen(false); setCreating(true); }}>
-            <Plus className="size-4" /> مشروع جديد
+            <Plus className="size-4" /> مساحة عمل جديدة
           </Button>
         </PopoverContent>
       </Popover>
@@ -140,18 +140,18 @@ function EditProjectDialog({ space, onClose }: { space: Space; onClose: () => vo
     finally { setBusy(false); }
   };
   const toggleArchive = () => {
-    if (!space.archived && !window.confirm("أرشفة المشروع؟ هيختفي من قايمة المشاريع عندك وعند الفريق، وتقدر ترجّعه في أي وقت.")) return;
-    void run(() => archive({ data: { workspaceId: space.id, archived: !space.archived } }), space.archived ? "رجّعت المشروع" : "اتأرشف المشروع");
+    if (!space.archived && !window.confirm("أرشفة المساحة؟ هيختفي من قايمة المشاريع عندك وعند الفريق، وتقدر ترجّعه في أي وقت.")) return;
+    void run(() => archive({ data: { workspaceId: space.id, archived: !space.archived } }), space.archived ? "رجّعت المساحة" : "اتأرشف المساحة");
   };
   const doTransfer = () => {
     const m = members?.find((x) => x.id === newOwner);
     if (!m) return;
-    if (!window.confirm(`نقل ملكية المشروع لـ«${m.name}»؟ هتفضل عضو مسؤول في الفريق، لكن هو اللي هيتحكم في المشروع.`)) return;
-    void run(() => transfer({ data: { workspaceId: space.id, newOwnerId: m.id } }), `بقى ${m.name} مالك المشروع`);
+    if (!window.confirm(`نقل ملكية المساحة لـ«${m.name}»؟ هتفضل عضو مسؤول في الفريق، لكن هو اللي هيتحكم في المساحة.`)) return;
+    void run(() => transfer({ data: { workspaceId: space.id, newOwnerId: m.id } }), `بقى ${m.name} مالك المساحة`);
   };
 
   const save = async () => {
-    if (name.trim().length < 2) { toast.error("اكتب اسم المشروع"); return; }
+    if (name.trim().length < 2) { toast.error("اكتب اسم المساحة"); return; }
     setBusy(true);
     try {
       let logoPath: string | undefined;
@@ -159,7 +159,8 @@ function EditProjectDialog({ space, onClose }: { space: Space; onClose: () => vo
         if (file.size > 5 * 1024 * 1024) throw new Error("الصورة أكبر من 5 ميجا");
         const { data: auth } = await supabase.auth.getUser();
         const ext = file.name.split(".").pop() || "png";
-        logoPath = `${auth.user!.id}/spaces/${crypto.randomUUID()}.${ext}`;
+        if (!auth.user) throw new Error("سجّل الدخول أولاً");
+        logoPath = `${auth.user.id}/spaces/${crypto.randomUUID()}.${ext}`;
         const { error } = await supabase.storage.from("avatars").upload(logoPath, file, { contentType: file.type });
         if (error) throw new Error("تعذّر رفع الصورة");
       }
@@ -177,15 +178,15 @@ function EditProjectDialog({ space, onClose }: { space: Space; onClose: () => vo
   return (
     <Dialog open onOpenChange={(v) => { if (!v) onClose(); }}>
       <DialogContent className="max-w-md" dir="rtl">
-        <DialogTitle className="font-display text-xl font-black">إعدادات المشروع</DialogTitle>
+        <DialogTitle className="font-display text-xl font-black">إعدادات المساحة</DialogTitle>
         <div className="flex items-center gap-3">
-          <button type="button" onClick={() => fileRef.current?.click()} aria-label="تغيير صورة المشروع"
+          <Button variant="ghost" type="button" onClick={() => fileRef.current?.click()} aria-label="تغيير صورة المساحة"
             className="grid size-16 shrink-0 place-items-center overflow-hidden rounded-xl border-2 border-dashed border-border bg-muted hover:border-primary">
             {preview ? <img src={preview} alt="" className="size-full object-cover" /> : <ImagePlus className="size-6 text-muted-foreground" />}
-          </button>
+          </Button>
           <input ref={fileRef} type="file" accept="image/*" hidden onChange={(e) => setFile(e.target.files?.[0] ?? null)} />
           <div className="flex-1 space-y-1">
-            <label className="text-xs font-bold" htmlFor="pj-edit-name">اسم المشروع</label>
+            <label className="text-xs font-bold" htmlFor="pj-edit-name">اسم المساحة</label>
             <Input id="pj-edit-name" value={name} onChange={(e) => setName(e.target.value)} maxLength={60} />
           </div>
         </div>
@@ -193,7 +194,7 @@ function EditProjectDialog({ space, onClose }: { space: Space; onClose: () => vo
           {busy && <Loader2 className="size-4 animate-spin" />} حفظ
         </Button>
         <div className="space-y-2 border-t border-border pt-4">
-          <p className="flex items-center gap-1.5 text-sm font-bold"><Crown className="size-4 text-primary" /> نقل ملكية المشروع</p>
+          <p className="flex items-center gap-1.5 text-sm font-bold"><Crown className="size-4 text-primary" /> نقل ملكية المساحة</p>
           {members && members.length > 0 ? (
             <div className="flex gap-2">
               <select value={newOwner} onChange={(e) => setNewOwner(e.target.value)} aria-label="اختار المالك الجديد"
@@ -203,10 +204,10 @@ function EditProjectDialog({ space, onClose }: { space: Space; onClose: () => vo
               </select>
               <Button type="button" variant="outline" disabled={!newOwner || busy} onClick={doTransfer}>نقل</Button>
             </div>
-          ) : <p className="text-xs text-muted-foreground">ادعُ عضو للمشروع الأول علشان تقدر تنقل له الملكية.</p>}
+          ) : <p className="text-xs text-muted-foreground">ادعُ عضو للمساحة الأول علشان تقدر تنقل له الملكية.</p>}
         </div>
         <Button type="button" variant="ghost" disabled={busy} onClick={toggleArchive} className="w-full gap-2 text-muted-foreground">
-          {space.archived ? <><ArchiveRestore className="size-4" /> استرجاع المشروع</> : <><Archive className="size-4" /> أرشفة المشروع</>}
+          {space.archived ? <><ArchiveRestore className="size-4" /> استرجاع المساحة</> : <><Archive className="size-4" /> أرشفة المساحة</>}
         </Button>
       </DialogContent>
     </Dialog>
@@ -234,7 +235,7 @@ function CreateProjectDialog({ open, onOpenChange, onCreated }: { open: boolean;
   };
 
   const submit = async () => {
-    if (name.trim().length < 2) { toast.error("اكتب اسم المشروع"); return; }
+    if (name.trim().length < 2) { toast.error("اكتب اسم المساحة"); return; }
     setBusy(true);
     try {
       let logoPath: string | undefined;
@@ -242,14 +243,15 @@ function CreateProjectDialog({ open, onOpenChange, onCreated }: { open: boolean;
         if (file.size > 5 * 1024 * 1024) throw new Error("الصورة أكبر من 5 ميجا");
         const { data: auth } = await supabase.auth.getUser();
         const ext = file.name.split(".").pop() || "png";
-        logoPath = `${auth.user!.id}/spaces/${crypto.randomUUID()}.${ext}`;
+        if (!auth.user) throw new Error("سجّل الدخول أولاً");
+        logoPath = `${auth.user.id}/spaces/${crypto.randomUUID()}.${ext}`;
         const { error } = await supabase.storage.from("avatars").upload(logoPath, file, { contentType: file.type });
         if (error) throw new Error("تعذّر رفع الصورة");
       }
       const finalInvites = email.trim() ? [...invites, email.trim().toLowerCase()] : invites;
       const { id } = await create({ data: { name: name.trim(), industry: industry.trim() || undefined, website: website.trim() || undefined, logoPath, invites: finalInvites } });
       await qc.invalidateQueries({ queryKey: ["human-spaces"] });
-      toast.success(finalInvites.length ? `اتعمل المشروع واتبعتت ${finalInvites.length} دعوة` : "اتعمل المشروع");
+      toast.success(finalInvites.length ? `اتعمل المساحة واتبعتت ${finalInvites.length} دعوة` : "اتعمل المساحة");
       onOpenChange(false);
       setName(""); setIndustry(""); setWebsite(""); setInvites([]); setFile(null); setEmail("");
       onCreated(id);
@@ -263,16 +265,16 @@ function CreateProjectDialog({ open, onOpenChange, onCreated }: { open: boolean;
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-md" dir="rtl">
-        <DialogTitle className="font-display text-xl font-black">مشروع جديد</DialogTitle>
-        <p className="-mt-2 text-sm text-muted-foreground">مساحة مستقلة كاملة: موظفين ومحادثات ومهام وفريق خاص بالمشروع ده بس.</p>
+        <DialogTitle className="font-display text-xl font-black">مساحة عمل جديدة</DialogTitle>
+        <p className="-mt-2 text-sm text-muted-foreground">فريق ومحادثات مشتركة، ومشاريع متعددة داخل مساحة العمل.</p>
         <div className="flex items-center gap-3">
-          <button type="button" onClick={() => fileRef.current?.click()} aria-label="صورة المشروع"
+          <Button variant="ghost" type="button" onClick={() => fileRef.current?.click()} aria-label="صورة المساحة"
             className="grid size-16 shrink-0 place-items-center overflow-hidden rounded-xl border-2 border-dashed border-border bg-muted hover:border-primary">
             {preview ? <img src={preview} alt="" className="size-full object-cover" /> : <ImagePlus className="size-6 text-muted-foreground" />}
-          </button>
+          </Button>
           <input ref={fileRef} type="file" accept="image/*" hidden onChange={(e) => setFile(e.target.files?.[0] ?? null)} />
           <div className="flex-1 space-y-1">
-            <label className="text-xs font-bold" htmlFor="pj-name">اسم المشروع</label>
+            <label className="text-xs font-bold" htmlFor="pj-name">اسم المساحة</label>
             <Input id="pj-name" value={name} onChange={(e) => setName(e.target.value)} placeholder="مثلاً: متجر العطور" maxLength={60} />
           </div>
         </div>
@@ -290,14 +292,14 @@ function CreateProjectDialog({ open, onOpenChange, onCreated }: { open: boolean;
             <div className="flex flex-wrap gap-1.5 pt-1">
               {invites.map((m) => (
                 <span key={m} dir="ltr" className="flex items-center gap-1 rounded-full bg-muted px-2 py-0.5 text-xs">
-                  {m}<button type="button" aria-label="إزالة" onClick={() => setInvites(invites.filter((x) => x !== m))}><X className="size-3" /></button>
+                  {m}<Button variant="ghost" type="button" aria-label="إزالة" onClick={() => setInvites(invites.filter((x) => x !== m))}><X className="size-3" /></Button>
                 </span>
               ))}
             </div>
           )}
         </div>
         <Button type="button" onClick={submit} disabled={busy} className="w-full gap-2">
-          {busy && <Loader2 className="size-4 animate-spin" />} إنشاء المشروع والدخول له
+          {busy && <Loader2 className="size-4 animate-spin" />} إنشاء مساحة العمل
         </Button>
       </DialogContent>
     </Dialog>

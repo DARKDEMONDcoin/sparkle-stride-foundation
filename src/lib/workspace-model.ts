@@ -4,7 +4,7 @@ export type WorkspaceView = typeof WORKSPACE_VIEWS[number];
 export function workspaceSearch(search: Record<string, unknown>) {
   return {
     workspaceId: typeof search.workspaceId === "string" ? search.workspaceId : undefined,
-    view: WORKSPACE_VIEWS.includes(search.view as WorkspaceView) ? search.view as WorkspaceView : "today" as WorkspaceView,
+    view: WORKSPACE_VIEWS.includes(search.view as WorkspaceView) ? search.view as WorkspaceView : undefined,
     projectId: typeof search.projectId === "string" ? search.projectId : undefined,
   };
 }
