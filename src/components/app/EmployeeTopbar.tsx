@@ -3,7 +3,7 @@
  * (التقويم وغيره) حتى لا يفقد المستخدم سياق الموظف عند التنقل.
  */
 import { useNavigate } from "@tanstack/react-router";
-import { BookOpenText, CalendarDays, MessageCircle, PlugZap, Settings2 } from "lucide-react";
+import { BookOpenText, CalendarDays, MessageCircle, PlugZap } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Portrait } from "@/components/site/Portrait";
@@ -33,7 +33,7 @@ export function EmployeeTopbar({
 
   return (
     <div
-      className="chat-topbar-actions no-scrollbar mb-4 flex min-w-0 items-center gap-1 overflow-x-auto rounded-2xl border border-border bg-card/80 px-2 py-2 shadow-card sm:gap-1.5"
+      className="chat-topbar-actions no-scrollbar flex min-w-0 flex-1 items-center gap-1 overflow-x-auto sm:gap-1.5"
       dir="rtl"
     >
       <div className="chat-employee-identity">
@@ -93,19 +93,6 @@ export function EmployeeTopbar({
         >
           <PlugZap className="size-4" />
           <span>التكاملات</span>
-        </Button>
-      </div>
-      <div className="chat-employee-end-actions">
-        <Button
-          type="button"
-          variant="ghost"
-          size="icon-sm"
-          className="chat-nav-button"
-          aria-label="الإعدادات"
-          title="الإعدادات"
-          onClick={() => void navigate({ to: "/app/settings" })}
-        >
-          <Settings2 className="size-4" />
         </Button>
       </div>
     </div>

@@ -47878,3 +47878,25 @@ body:has(.chat-composer-dock) .liquid-glass-sahl.sahl-cookie-consent {
   --guide-focus: var(--guide-accent);
   --guide-shadow: 0 8px 30px -22px color-mix(in oklab, var(--guide-ink) 25%, transparent);
 }
+
+/* Unified app header: on desktop the bell and profile picture always sit at the far end, same as every other app page. */
+@media (min-width: 768px) {
+  .is-chat-shell .app-topbar-controls {
+    flex: 1 1 auto !important;
+    width: 100% !important;
+    max-width: none !important;
+    justify-content: flex-start !important;
+    background: transparent !important;
+    border: 0 !important;
+    box-shadow: none !important;
+  }
+  .is-chat-shell .app-topbar-controls > .contents > .chat-topbar-actions,
+  .is-chat-shell .app-topbar-controls .chat-topbar-actions {
+    flex: 0 1 auto !important;
+    width: auto !important;
+  }
+  .is-chat-shell .app-topbar-controls > :has(> button[aria-label="حسابك"]),
+  .is-chat-shell .app-topbar-controls > :nth-last-child(2) {
+    margin-inline-start: auto;
+  }
+}

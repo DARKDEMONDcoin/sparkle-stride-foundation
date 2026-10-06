@@ -31,7 +31,7 @@ import {
   Globe,
   Palette,
   MailWarning,
-  Settings2,
+
   MessageCircle,
   Search,
 } from "lucide-react";
@@ -1276,11 +1276,6 @@ function ChatView({
             </Button>
             <Button ref={(button) => { barPanelButtonRefs.current.apps = button; }} type="button" variant="ghost" size="sm" className={cn("chat-nav-button", barPanel === "apps" && "is-active")} aria-label="التكاملات" title="تكاملات الموظف" aria-expanded={barPanel === "apps"} onClick={() => toggleBarPanel("apps")}>
               <PlugZap className="size-4" /><span>التكاملات</span>
-            </Button>
-          </div>
-          <div className="chat-employee-end-actions">
-            <Button type="button" variant="ghost" size="icon-sm" className="chat-nav-button" aria-label="الإعدادات" title="الإعدادات" onClick={() => void navigate({ to: "/app/settings" })}>
-              <Settings2 className="size-4" />
             </Button>
           </div>
         </div>
