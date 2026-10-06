@@ -47879,30 +47879,34 @@ body:has(.chat-composer-dock) .liquid-glass-sahl.sahl-cookie-consent {
   --guide-shadow: 0 8px 30px -22px color-mix(in oklab, var(--guide-ink) 25%, transparent);
 }
 
-/* Unified app header: on desktop the bell and profile picture always sit at the far end, same as every other app page. */
+/* Employee tools and account controls share one centered desktop surface. */
 @media (min-width: 768px) {
   .app-shell.is-chat-shell header.app-topbar .app-topbar-inner {
-    border-radius: 0 !important;
+    border-radius: 1rem !important;
     padding-inline: 0.5rem !important;
     display: flex !important;
-    width: 100% !important;
-    max-width: none !important;
-    margin: 0 !important;
-    background: transparent !important;
-    border: 0 !important;
-    box-shadow: none !important;
-    -webkit-backdrop-filter: none !important;
-    backdrop-filter: none !important;
+    width: max-content !important;
+    max-width: 100% !important;
+    margin-inline: auto !important;
+    background: color-mix(in oklab, var(--card) 92%, transparent) !important;
+    border: 1px solid var(--border) !important;
+    box-shadow: 0 12px 32px -24px var(--foreground) !important;
   }
-  .app-shell.is-chat-shell header.app-topbar .app-topbar-controls { flex: 1 1 auto !important; width: 100% !important; }
+  .app-shell.is-chat-shell header.app-topbar .app-topbar-controls {
+    flex: 0 1 auto !important;
+    width: auto !important;
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) auto auto;
+    overflow: visible !important;
+  }
   .app-shell.is-chat-shell header.app-topbar .app-topbar-controls .chat-topbar-actions {
     flex: 0 1 auto !important;
     width: auto !important;
-    margin-inline: auto;
-    padding: 0.25rem 0.5rem;
-    border: 1px solid var(--border);
-    border-radius: 1rem;
-    background: color-mix(in oklab, var(--card) 92%, transparent);
-    box-shadow: 0 12px 32px -24px var(--foreground);
+    margin: 0;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
   }
 }
