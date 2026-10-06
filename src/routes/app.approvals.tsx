@@ -1,8 +1,13 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { ShareButton } from "@/components/app/ShareButton";
 import { createFileRoute } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
-import { Check, X, PartyPopper, Loader2 } from "lucide-react";
+import { Check, CheckCheck, Eye, X, PartyPopper, Loader2 } from "lucide-react";
+import { toast } from "sonner";
+
+import { ApprovalPreview, CATEGORY_LABEL, categoryOf, type ApprovalCategory } from "@/components/app/ApprovalPreview";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 import { AppShell } from "@/components/app/AppShell";
 import { PublishPanel } from "@/components/app/PublishPanel";
@@ -259,6 +264,65 @@ function ApprovalsPage() {
                     className="size-5"
                   />
                   {member ? (
+                    <span className="inline-flex items-center gap-1.5 font-bold">
+                      <span
+                        className="size-7 shrink-0 overflow-hidden rounded-lg"
+                        style={{ background: member.tintSoft }}
+                      >
+                        <Portrait memberId={member.id} name={member.name} className="size-full" />
+                      </span>
+                      {member.name}
+                    </span>
+                  ) : null}
+                  <span className="inline-flex items-center gap-1 text-muted-foreground">
+                    <AppIcon name={a.channel} className="size-3.5 shrink-0" />
+                    {appLabel(a.channel)}
+                  </span>
+                  <span className="rounded-full bg-secondary px-2.5 py-0.5 font-bold">{a.kind}</span>
+                  {(() => {
+                    const score = qualityScoreOf(a.steps);
+                    if (score === null) return null;
+                    const good = score >= 82;
+                    return (
+                      <span
+                        title="درجة مراجعة الجودة الداخلية قبل التسليم"
+                        className={`rounded-full px-2.5 py-0.5 font-bold ${good ? "bg-jade/15 text-jade-deep" : "bg-amber-500/15 text-amber-700"}`}
+                      >
+                        جودة {score}/100
+                      </span>
+                    );
+                  })()}
+                  <span className="ms-auto text-muted-foreground">{a.scheduled ?? ""}</span>
+                </div>
+
+                <h2 className="mt-4 font-display text-lg font-black break-words">{a.title}</h2>
+                <p className="mt-3 line-clamp-6 overflow-hidden rounded-2xl bg-secondary/50 p-4 leading-relaxed break-words whitespace-pre-wrap text-ink-soft">
+                  {sanitizePostBody(a.output ?? a.detail) || a.detail}
+                </p>
+
+                {workspace?.id && cat === "post" ? (
+                  <PublishPanel
+                    workspaceId={workspace.id}
+                    employeeId={a.employee_id}
+                    taskId={a.id}
+                    channel={a.channel}
+                    body={a.output ?? a.detail ?? ""}
+                  />
+                ) : null}
+
+                <div className="mt-5 flex flex-wrap gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setPreviewId(a.id)}
+                    className="inline-flex items-center gap-2 rounded-full bg-secondary px-5 py-2.5 text-sm font-bold transition-colors hover:bg-secondary/70"
+                  >
+                    <Eye className="size-4" /> معاينة
+                  </button>
+                  {workspace?.id ? (
+                    <ShareButton workspaceId={workspace.id} employeeId={a.employee_id} title={a.title} body={a.output ?? a.detail ?? ""} />
+                  ) : null}
+                  <button
+                    onClick={() => void act(a.id, "done")}
                     disabled={busyId === a.id}
                     className="inline-flex items-center gap-2 rounded-full border border-border px-5 py-2.5 text-sm font-bold transition-colors hover:bg-secondary disabled:opacity-60"
                   >
@@ -356,6 +420,77 @@ function ApprovalsPage() {
           ) : null}
         </section>
       ) : null}
+      {selected.size ? (
+        <div className="fixed inset-x-3 bottom-4 z-40 mx-auto flex max-w-2xl flex-wrap items-center gap-2 rounded-2xl border border-border bg-card/95 p-3 shadow-2xl backdrop-blur animate-pop-in sm:inset-x-6">
+          <span className="px-2 text-sm font-black">
+            {bulk ? `جارٍ التنفيذ ${bulk.done}/${bulk.total}` : `${selected.size} محدد`}
+          </span>
+          <button
+            type="button"
+            onClick={() => setSelected(new Set())}
+            disabled={!!bulk}
+            className="min-h-10 rounded-full px-3 text-sm font-bold text-muted-foreground hover:bg-secondary"
+          >
+            إلغاء التحديد
+          </button>
+          <button
+            type="button"
+            onClick={() => void runBulk([...selected], "rejected")}
+            disabled={!!bulk}
+            className="ms-auto inline-flex min-h-10 items-center gap-2 rounded-full border border-border px-4 text-sm font-bold text-coral disabled:opacity-60"
+          >
+            <X className="size-4" /> رفض المحدد
+          </button>
+          <button
+            type="button"
+            onClick={() => void runBulk([...selected], "done")}
+            disabled={!!bulk}
+            className="inline-flex min-h-10 items-center gap-2 rounded-full bg-foreground px-5 text-sm font-bold text-background disabled:opacity-60"
+          >
+            {bulk ? <Loader2 className="size-4 animate-spin" /> : <Check className="size-4" />}
+            اعتماد المحدد ({selected.size})
+          </button>
+        </div>
+      ) : null}
+
+      <Dialog open={!!previewTask} onOpenChange={(o) => !o && setPreviewId(null)}>
+        <DialogContent className="max-h-[90vh] max-w-2xl overflow-y-auto" dir="rtl">
+          {previewTask ? (
+            <>
+              <DialogHeader>
+                <DialogTitle className="text-start">معاينة: {previewTask.title}</DialogTitle>
+              </DialogHeader>
+              <ApprovalPreview task={previewTask} brandName={workspace?.name ?? "علامتك"} />
+              <div className="flex flex-wrap justify-end gap-2 pt-2">
+                <button
+                  type="button"
+                  onClick={async () => {
+                    const id = previewTask.id;
+                    await act(id, "rejected");
+                    setPreviewId(null);
+                  }}
+                  className="inline-flex min-h-10 items-center gap-2 rounded-full border border-border px-4 text-sm font-bold text-coral"
+                >
+                  <X className="size-4" /> رفض
+                </button>
+                <button
+                  type="button"
+                  onClick={async () => {
+                    const id = previewTask.id;
+                    await act(id, "done");
+                    setPreviewId(null);
+                  }}
+                  disabled={busyId === previewTask.id}
+                  className="inline-flex min-h-10 items-center gap-2 rounded-full bg-foreground px-5 text-sm font-bold text-background disabled:opacity-60"
+                >
+                  {busyId === previewTask.id ? <Loader2 className="size-4 animate-spin" /> : <Check className="size-4" />}
+                  اعتماد
+                </button>
+              </div>
+            </>
+          ) : null}
+        </DialogContent>
+      </Dialog>
     </AppShell>
   );
 }
