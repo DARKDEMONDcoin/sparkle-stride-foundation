@@ -12,7 +12,7 @@
 - Social outputs use `src/lib/post-format.ts` across site, queue, and Telegram.
 - Cloud browsing uses `src/lib/cloud-browser.server.ts`; sensitive intents require owner approval.
 - Multi-step browsing uses `browser-agent.server.ts`; page content is untrusted and sensitive clicks need approval.
-- Global destinations stay in AppShell rail; employee pages retain topbar; design editing stays in chat.
+- Global destinations stay in AppShell rail; employee pages share a centered tools/bell/account header; design editing stays in chat to preserve context.
 - The desktop AppShell sidebar collapses to an employee icon rail and persists its state locally; keep fixed chat overlays aligned to its width so the conversation stays usable.
 - Rail expands independently; chat controls clear both sidebars; embedded chat hides the rail to avoid overlap.
 - `runEmployeeTurn` delegates out-of-specialty work via smartHandoff while keeping the conversation.
@@ -21,7 +21,7 @@
 - All employee paths derive research depth, reasoning effort, risk, and success checks from `src/lib/turn-plan.ts`; this prevents conflicting execution decisions.
 - Telegram actions and manual credentials stay in-chat; no flow depends on website deep links.
 - Brand data is optional per turn via `src/lib/brand-relevance.ts` (opt-out/opt-in from recent user messages); forcing the brand name into every post broke user intent.
-- Chat messages persist approval tasks and safe pending actions across refreshes.
+- Messages.outputs retains full chat deliverables; drafts enter tasks only by user choice, while pendingAction retains sensitive execution approval across refreshes. Why: viewing work must not require a queue.
 - Semantic memory lives in `knowledge_chunks` (google/gemini-embedding-2, 3072 dims) via `src/lib/knowledge.server.ts`; never mix embedding models in that column.
 - Public site origin comes from `src/lib/site-origin.ts`; do not hard-code other lovable.app hosts.
 - Chat research requests run `runBrowserAgent` inside the turn and stream `browser`/`step` events to the chat; employees never redirect users to colleagues (routing is silent). Why: users need real results and live visibility, not hand-off ping-pong.

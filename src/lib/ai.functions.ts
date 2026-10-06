@@ -28,6 +28,7 @@ import { reasoningDepthBlock, effortFor } from "./reasoning-depth";
 import { replyStructureBlock } from "@/lib/reply-structure";
 import { buildBrandContext } from "@/lib/brand-context.server";
 import { planTurn, turnPlanBlock } from "@/lib/turn-plan";
+import { composeChatOutputs } from "./chat-outputs";
 
 type Deliverable = {
   title?: string;
@@ -1717,26 +1718,8 @@ export async function runEmployeeTurn(
       reply = `${reply.trim()}\n\n— استندتُ إلى بيانات حقيقية: ${research.used.join(" · ")}`;
     }
 
-    // عدة مخرجات: كل مخرج مستقل — نوجّه المستخدم إليها بدل محرّر واحد.
-    if (deliverables.length > 1) {
-      // «منشورات» كلمة سِراج وحده: ردود سام وإيفا تحمل قناة أيضاً وكانت تُوصف خطأً بأنها منشورات.
-      const allPosts = agentId === "sonny" && deliverables.every((d) => Boolean(d.channel));
-      // تسمية المخرجات بنوعها الحقيقي: رسائل بريد لا تُسمّى «منشورات».
-      const kinds = new Set(deliverables.map((d) => (d.kind ?? "").trim()).filter(Boolean));
-      const oneKind = kinds.size === 1 ? [...kinds][0]! : "";
-      const label = allPosts
-        ? "منشورات"
-        : oneKind
-          ? /رسال|بريد|إيميل|ايميل|mail/i.test(oneKind)
-            ? "رسائل"
-            : /مقال|تدوين/i.test(oneKind)
-              ? "مقالات"
-              : /تصميم|صورة|بصري/i.test(oneKind)
-                ? "تصاميم"
-                : "مخرجات"
-          : "مخرجات";
-      reply = `${reply.trim()}\n\n📋 جهّزت **${deliverables.length} ${label}** منفصلة، كل واحدة بنصها الكامل — راجعها واعتمدها من [المخرجات والمهام](/app/tasks).`;
-    }
+    // Deliver every finished body in chat, not just a pointer to the queue.
+    reply = composeChatOutputs(reply, deliverables);
 
     // صور من موقع المستخدم: اختيارية تماماً — تظهر فقط حين يطلبها في رسالته.
     const wantsSiteImages =
@@ -1855,6 +1838,13 @@ export async function runEmployeeTurn(
         body: reply,
         conversation_id: data.conversationId,
         pending_action: pendingAction,
+        outputs: deliverables.map((deliverable) => ({
+          title: deliverable.title ?? "المخرج",
+          body: mediaUrl ? `![${deliverable.title ?? "المخرج"}](${mediaUrl})\n\n${deliverable.body ?? ""}` : deliverable.body ?? "",
+          kind: deliverable.kind ?? persona.kind,
+          channel: deliverable.channel ?? persona.channel,
+          scheduled: deliverable.scheduled ?? null,
+        })),
       })
       .select()
       .single();
@@ -1878,16 +1868,17 @@ export async function runEmployeeTurn(
     // المخرجات المتعددة تُحفظ بالتوازي، ثم يُربط أول مخرج مباشرةً برسالة الموظف.
     const [taskRows, savedDecisions] = await Promise.all([
       Promise.all(
-        deliverables.map(async (deliverable) => {
+        // Draft queues are optional; actual external actions retain approval.
+        (pendingAction ? deliverables : []).map(async (deliverable) => {
           const output = mediaUrl
-            ? `![${deliverable.title}](${mediaUrl})\n\n${deliverable.body!}`
-            : deliverable.body!;
+            ? `![${deliverable.title ?? "المخرج"}](${mediaUrl})\n\n${deliverable.body ?? ""}`
+            : deliverable.body ?? "";
           const { data: task } = await supabase
             .from("tasks")
             .insert({
               workspace_id: data.workspaceId,
               employee_id: data.employeeId,
-              title: deliverable.title!,
+              title: deliverable.title ?? "المخرج",
               detail: reply.slice(0, 400),
               kind: deliverable.kind ?? persona.kind,
               channel: deliverable.channel ?? persona.channel,
@@ -1985,6 +1976,7 @@ export const runSkill = createServerFn({ method: "POST" })
       skillId: data.skillId,
       values: data.values,
       conversationId: data.conversationId,
+      saveToTasks: false,
     });
     return { output: run.output, messageId: run.messageId, taskId: run.taskId };
   });

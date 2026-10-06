@@ -773,6 +773,8 @@ export async function executeSkill(
     conversationId?: string;
     /** يُضاف إلى عنوان المهمة للتمييز بين التشغيل اليدوي والمجدول. */
     origin?: string;
+    /** Chat-created drafts remain in chat unless the user opts into the queue. */
+    saveToTasks?: boolean;
   },
 ): Promise<SkillRun> {
   // المفاتيح تُقرأ داخل freeChat من طبقة مفاتيح الخادم الموحّدة.
@@ -1204,6 +1206,9 @@ export async function executeSkill(
     output = `${output}\n\n> مصادر البيانات: ${sources.join(" · ")}`;
   }
 
+  const subject =
+    params.values["keyword"] || params.values["topic"] || params.values["business"] || params.values["product"] || "";
+  const title = `${skill.title}${subject ? ` — ${subject}` : ""}${params.origin ? ` · ${params.origin}` : ""}`;
   const { data: assistantRow, error: assistantError } = await client
     .from("messages")
     .insert({
@@ -1212,20 +1217,13 @@ export async function executeSkill(
       role: "assistant",
       body: output,
       conversation_id: params.conversationId ?? null,
+      outputs: [{ title, body: output, kind: skill.kind, channel: skill.channel, scheduled: null }],
     })
     .select("id")
     .single();
   if (assistantError) throw new Error(assistantError.message);
 
-  const subject =
-    params.values["keyword"] ||
-    params.values["topic"] ||
-    params.values["business"] ||
-    params.values["product"] ||
-    "";
-  const title = `${skill.title}${subject ? ` — ${subject}` : ""}${params.origin ? ` · ${params.origin}` : ""}`;
-
-  const { data: task } = await client
+  const { data: task } = params.saveToTasks === false ? { data: null } : await client
     .from("tasks")
     .insert({
       workspace_id: params.workspaceId,

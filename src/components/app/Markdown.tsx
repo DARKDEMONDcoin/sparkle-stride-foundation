@@ -1,5 +1,6 @@
 import { memo } from "react";
-import ReactMarkdown from "react-markdown";
+import { MessageResponse } from "@/components/ai-elements/message";
+import { Button } from "@/components/ui/button";
 import rehypeRaw from "rehype-raw";
 import rehypeSanitize, { defaultSchema } from "rehype-sanitize";
 import remarkGfm from "remark-gfm";
@@ -47,7 +48,7 @@ function MarkdownView({
         className,
       )}
     >
-      <ReactMarkdown
+      <MessageResponse
         remarkPlugins={[remarkGfm]}
         rehypePlugins={[rehypeRaw, [rehypeSanitize, schema]]}
         components={{
@@ -85,15 +86,16 @@ function MarkdownView({
                   const path = typeof href === "string" ? href : "";
                   if (path.startsWith("/app")) {
                     return (
-                      <button
+                      <Button
                         type="button"
+                        variant="link"
                         className="text-primary underline underline-offset-4"
                         onClick={() => {
                           onOpenApp(path);
                         }}
                       >
                         {children}
-                      </button>
+                      </Button>
                     );
                   }
                   return (
@@ -107,7 +109,7 @@ function MarkdownView({
         }}
       >
         {body}
-      </ReactMarkdown>
+      </MessageResponse>
     </div>
   );
 }
