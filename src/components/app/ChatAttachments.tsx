@@ -18,6 +18,7 @@ const ATTACHMENT_LINE =
 
 export function splitMessageMedia(body: string): { text: string; items: ChatAttachment[] } {
   const items: ChatAttachment[] = [];
+  const seen = new Set<string>();
   const kept: string[] = [];
   for (const line of body.split("\n")) {
     const match = line.match(ATTACHMENT_LINE);
@@ -30,7 +31,10 @@ export function splitMessageMedia(body: string): { text: string; items: ChatAtta
       kept.push(line);
       continue;
     }
-    items.push({ url, type: match[1] ? "image" : "video", alt: (match[2] || match[4]) ?? undefined });
+    if (!seen.has(url)) {
+      seen.add(url);
+      items.push({ url, type: match[1] ? "image" : "video", alt: (match[2] || match[4]) ?? undefined });
+    }
   }
   return { text: kept.join("\n").replace(/\n{3,}/g, "\n\n").trim(), items };
 }

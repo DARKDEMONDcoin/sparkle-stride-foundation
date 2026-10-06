@@ -27,7 +27,7 @@ export function composeChatOutputs(
   reply: string,
   outputs: { title?: string; body?: string }[],
 ): string {
-  if (outputs.length < 2) return reply;
+  if (!outputs.length) return reply;
   const missing = outputs.filter(
     (output) => output.body?.trim() && !reply.includes(output.body.trim()),
   );

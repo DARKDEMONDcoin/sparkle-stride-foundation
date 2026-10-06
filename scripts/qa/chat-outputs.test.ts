@@ -20,6 +20,8 @@ describe("chat-first delivery", () => {
   });
   test("single output stays unchanged", () =>
     expect(composeChatOutputs("full", [{ body: "full" }])).toBe("full"));
+  test("recovers a missing single legacy output", () =>
+    expect(composeChatOutputs("summary", [{ body: "complete legacy output" }])).toContain("complete legacy output"));
   test("rejects invalid persisted outputs", () => {
     expect(readChatOutputs(null)).toEqual([]);
     expect(readChatOutputs([{ body: "" }, { body: 12 }, { body: "ready" }])).toHaveLength(1);
