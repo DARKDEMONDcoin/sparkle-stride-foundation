@@ -11,17 +11,46 @@ export function SaveChatOutputs({ messageId, count }: { messageId: string; count
   const [busy, setBusy] = useState(false);
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  return <div className="mt-3">
-    <Button type="button" variant="outline" size="sm" disabled={busy || saved} onClick={async () => {
-      setBusy(true); setError(null);
-      try { await save({ data: { messageId } }); setSaved(true);
-        await Promise.all([qc.invalidateQueries({ queryKey: ["tasks"] }), qc.invalidateQueries({ queryKey: ["messages"] })]);
-      } catch { setError("تعذّر الحفظ؛ المخرجات ما زالت محفوظة هنا. حاول مجدداً."); }
-      finally { setBusy(false); }
-    }}>
-      {busy ? <Loader2 className="size-4 animate-spin" /> : saved ? <Check className="size-4" /> : <ListPlus className="size-4" />}
-      {saved ? "أُضيفت للموافقات" : `أضف ${count > 1 ? `المخرجات (${count})` : "المخرج"} للمهام والموافقات`}
-    </Button>
-    {error ? <p role="alert" className="mt-2 text-sm text-destructive">{error}</p> : null}
-  </div>;
+  return (
+    <div className="mt-3">
+      <Button
+        type="button"
+        variant="outline"
+        size="sm"
+        disabled={busy || saved}
+        onClick={async () => {
+          setBusy(true);
+          setError(null);
+          try {
+            await save({ data: { messageId } });
+            setSaved(true);
+            await Promise.all([
+              qc.invalidateQueries({ queryKey: ["tasks"] }),
+              qc.invalidateQueries({ queryKey: ["messages"] }),
+            ]);
+          } catch {
+            setError("تعذّر الحفظ؛ المخرجات ما زالت محفوظة هنا. حاول مجدداً.");
+          } finally {
+            setBusy(false);
+          }
+        }}
+      >
+        {busy ? (
+          <Loader2 className="size-4 animate-spin" />
+        ) : saved ? (
+          <Check className="size-4" />
+        ) : (
+          <ListPlus className="size-4" />
+        )}
+        {saved
+          ? "أُضيفت للموافقات"
+          : `أضف ${count > 1 ? `المخرجات (${count})` : "المخرج"} للمهام والموافقات`}
+      </Button>
+      {error ? (
+        <p role="alert" className="mt-2 text-sm text-destructive">
+          {error}
+        </p>
+      ) : null}
+    </div>
+  );
 }
