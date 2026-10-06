@@ -306,7 +306,7 @@ function ApprovalsPage() {
                       </span>
                     );
                   })()}
-                  <span className="ms-auto text-muted-foreground">{a.scheduled ?? ""}</span>
+                  <span className="ms-auto text-muted-foreground">{formatScheduled(a.scheduled)}</span>
                 </div>
 
                 <h2 className="mt-4 font-display text-lg font-black break-words">{a.title}</h2>
