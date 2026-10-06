@@ -1432,6 +1432,7 @@ export type Database = {
           created_at: string
           employee_id: string
           id: string
+          outputs: Json | null
           pending_action: Json | null
           role: string
           sender_id: string | null
@@ -1446,6 +1447,7 @@ export type Database = {
           created_at?: string
           employee_id: string
           id?: string
+          outputs?: Json | null
           pending_action?: Json | null
           role: string
           sender_id?: string | null
@@ -1460,6 +1462,7 @@ export type Database = {
           created_at?: string
           employee_id?: string
           id?: string
+          outputs?: Json | null
           pending_action?: Json | null
           role?: string
           sender_id?: string | null
